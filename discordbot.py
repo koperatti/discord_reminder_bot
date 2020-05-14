@@ -22,4 +22,9 @@ async def meow(ctx):
     await ctx.send('にゃーごろごろ')
 
 
+@bot.command()
+async def what_do_you_think?(ctx):
+    await ctx.send('うん!そう思う!')
+
+
 bot.run(token)
