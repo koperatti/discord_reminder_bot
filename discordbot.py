@@ -21,10 +21,4 @@ async def ping(ctx):
 async def meow(ctx):
     await ctx.send('にゃーごろごろ')
 
-
-@bot.command()
-async def どう思う?(ctx):
-    await ctx.send('うん!そう思う!')
-
-
 bot.run(token)
