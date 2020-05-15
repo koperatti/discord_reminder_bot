@@ -1,12 +1,11 @@
 import discord
-from discord.ext import commands
 import os
 import datetime
 import traceback
 
 TOKEN = os.environ['DISCORD_BOT_TOKEN']
 started_time = datetime.datetime.today().strftime("%Y/%m/%d/%H/%M/%S")
-BOT_LOG_CHANNEL = '710813437675962449'
+BOT_LOG_CHANNEL = 710813437675962449
 
 # 接続に必要なオブジェクトを生成
 client = discord.Client()
