@@ -6,6 +6,7 @@ import traceback
 
 TOKEN = os.environ['DISCORD_BOT_TOKEN']
 started_time = datetime.datetime.today().strftime("%Y/%m/%d/%H/%M/%S")
+BOT_LOG_CHANNEL = '710813437675962449'
 
 # 接続に必要なオブジェクトを生成
 client = discord.Client()
@@ -13,8 +14,8 @@ client = discord.Client()
 # 起動時に動作する処理
 @client.event
 async def on_ready():
-    # 起動したらターミナルにログイン通知が表示される
-    print('Bot restarted')
+	channel = client.get_channel(CHANNEL_ID)
+    await channel.send(str(started_time) + ' Bot restarted!')
 
 # メッセージ受信時に動作する処理
 @client.event
