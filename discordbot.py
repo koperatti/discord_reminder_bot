@@ -3,18 +3,27 @@ import os
 import datetime
 import traceback
 
-token = os.environ['DISCORD_BOT_TOKEN']
+TOKEN = os.environ['DISCORD_BOT_TOKEN']
 started_time = datetime.datetime.today().strftime("%Y/%m/%d/%H/%M/%S")
-client = discord.Client()
-TOKEN = "<Token>"
 
+# 接続に必要なオブジェクトを生成
+client = discord.Client()
+
+# 起動時に動作する処理
 @client.event
 async def on_ready():
+    # 起動したらターミナルにログイン通知が表示される
+    print('Bot restarted')
 
-    ch_name = "710813437675962449"
+# メッセージ受信時に動作する処理
+@client.event
+async def on_message(message):
+    # メッセージ送信者がBotだった場合は無視する
+    if message.author.bot:
+        return
+    # 「/neko」と発言したら「にゃーん」が返る処理
+    if message.content == '/neko':
+        await message.channel.send('にゃーん')
 
-    for channel in client.get_all_channels():
-        if channel.name == ch_name:
-            await channel.send(str(started_time) + " Bot restarted")
-
+# Botの起動とDiscordサーバーへの接続
 client.run(TOKEN)
