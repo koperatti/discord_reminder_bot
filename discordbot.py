@@ -6,7 +6,7 @@ import traceback
 bot = commands.Bot(command_prefix='/')
 token = os.environ['DISCORD_BOT_TOKEN']
 started_time = datetime.datetime.now()
-@client.event
+@bot.event
 async def on_ready():
 
     ch_name = "710813437675962449"
