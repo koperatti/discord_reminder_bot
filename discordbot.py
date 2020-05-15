@@ -14,7 +14,7 @@ client = discord.Client()
 # 起動時に動作する処理
 @client.event
 async def on_ready():
-	channel = client.get_channel(CHANNEL_ID)
+	channel = client.get_channel(BOT_LOG_CHANNEL)
     await message.channel.send(str(started_time) + ' Bot restarted!')
 
 # メッセージ受信時に動作する処理
