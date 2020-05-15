@@ -4,7 +4,8 @@ import datetime
 import traceback
 
 TOKEN = os.environ['DISCORD_BOT_TOKEN']
-started_time = datetime.datetime.today().strftime("%Y/%m/%d/%H/%M/%S")
+DIFF_JST_FROM_UTC = 9
+started_time = datetime.datetime.utcnow() + datetime.timedelta(hours=DIFF_JST_FROM_UTC)
 BOT_LOG_CHANNEL = 710813437675962449
 
 # 接続に必要なオブジェクトを生成
@@ -14,7 +15,7 @@ client = discord.Client()
 @client.event
 async def on_ready():
 	channel = client.get_channel(BOT_LOG_CHANNEL)
-	await channel.send(str(started_time) + ' Bot restarted!')
+	await channel.send(str(started_time) + '(JST) Bot restarted!')
 
 # メッセージ受信時に動作する処理
 @client.event
