@@ -1,11 +1,13 @@
 from discord.ext import commands
 import os
+import datetime
 import traceback
 
 bot = commands.Bot(command_prefix='/')
 token = os.environ['DISCORD_BOT_TOKEN']
+started_time = datetime.datetime.now()
 
-
+ctx.send(710813437675962449, str(started_time) + "Bot restarted")
 @bot.event
 async def on_command_error(ctx, error):
     orig_error = getattr(error, "original", error)
