@@ -11,7 +11,7 @@ async def on_ready():
 
     ch_name = "710813437675962449"
 
-    for channel in client.get_all_channels():
+    for channel in bot.get_all_channels():
         if channel.name == ch_name:
             await channel.send(str(started_time) + "Bot restarted")
 @bot.event
