@@ -5,7 +5,7 @@ import traceback
 
 bot = commands.Bot(command_prefix='/')
 token = os.environ['DISCORD_BOT_TOKEN']
-started_time = datetime.datetime.now()
+started_time = datetime.datetime.today().strftime("%Y/%m/%d/%H/%M/%S")
 @bot.event
 async def on_ready():
 
