@@ -6,8 +6,14 @@ import traceback
 bot = commands.Bot(command_prefix='/')
 token = os.environ['DISCORD_BOT_TOKEN']
 started_time = datetime.datetime.now()
+@client.event
+async def on_ready():
 
-ctx.send(710813437675962449, str(started_time) + "Bot restarted")
+    ch_name = "710813437675962449"
+
+    for channel in client.get_all_channels():
+        if channel.name == ch_name:
+            await channel.send(str(started_time) + "Bot restarted")
 @bot.event
 async def on_command_error(ctx, error):
     orig_error = getattr(error, "original", error)
