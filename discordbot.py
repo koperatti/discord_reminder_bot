@@ -2,6 +2,7 @@ import discord
 import os
 import datetime
 import traceback
+from discord.ext import tasks
 
 TOKEN = os.environ['DISCORD_BOT_TOKEN']
 DIFF_JST_FROM_UTC = 9
@@ -34,26 +35,10 @@ def time_format_check(date):
 		else:
 			date = 'Format error'
 	return date
-# 接続に必要なオブジェクトを生成
-client = discord.Client()
-remind_list = []
 
-# 起動時に動作する処理
-@client.event
-async def on_ready():
-	channel = client.get_channel(BOT_LOG_CHANNEL)
-	command_channel = client.get_channel(BOT_COMMAND_CHANNEL)
-	data_channel = client.get_channel(BOT_DATA_CHANNEL)
-	await channel.send(str(started_time) + '(JST) Bot restarted!')	
-
-
-
-# メッセージ受信時に動作する処理
-@client.event
-async def on_message(message):
-	# メッセージ送信者がBotだった場合は無視する
-	if message.author.bot:
-		return
+def list_process(message):
+	rtn_msg = ''
+	log_msg = ''
 	command = message.content
 	if '/add' in command:
 		if '*' not in command:
@@ -70,15 +55,16 @@ async def on_message(message):
 						break
 					counter = counter + 1
 				if detect:
-					await command_channel.send('Same name detected! Try with other name.')
+					rtn_msg = 'Same name detected! Try with other name.'
 				elif deadline == 'Format error':
-					await command_channel.send('Format error in deadline')
+					rtn_msg = 'Format error in deadline'
 				else:
 					remind_list.append([task_name, subject, deadline])
+					log_msg = str(task_name) + ',' + str(subject) + ',' + str(deadline) + ' added'
 			else:
-				await command_channel.send('Some element missed')
+				rtn_msg = 'Some element missed'
 		else:
-			await command_channel.send('You can not use * in the statement')
+			rtn_msg = 'You can not use * in the statement'
 	elif '/remove' in command:
 		command_list = command.split()[1:]
 		if len(command_list) == 1:
@@ -91,21 +77,45 @@ async def on_message(message):
 				counter = counter + 1
 			if detect:
 				log_msg = remind_list.pop(counter)[0] + 'deleted'
-				await channel.send(log_msg)
 			else:
-				await command_channel.send('could not find ' + str(command_list[0]))
+				rtn_msg = 'could not find ' + str(command_list[0])
 		else:
-			await data_channel.send('Too many elements')
+			rtn_msg = 'Too many elements'
+	return rtn_msg log_msg
+
+# 接続に必要なオブジェクトを生成
+client = discord.Client()
+remind_list = []
+
+log_channel = client.get_channel(BOT_LOG_CHANNEL)
+command_channel = client.get_channel(BOT_COMMAND_CHANNEL)
+data_channel = client.get_channel(BOT_DATA_CHANNEL)
+# 起動時に動作する処理
+@client.event
+async def on_ready():	
+	await log_channel.send(str(started_time) + '(JST) Bot restarted!')
+
+# メッセージ受信時に動作する処理
+@client.event
+async def on_message(message):
+	# メッセージ送信者がBotだった場合は無視する
+	if message.author.bot:
+		return
+	rtn_msg, log_msg = list_process(message)
+	await command_channel.send(rtn_msg)
+	# 「/neko」と発言したら「にゃーん」が返る処理
+	if message.content == '/neko':
+		await message.channel.send('にゃーん')
+# 一分に一回行う処理
+@tasks.loop(seconds=60)
+async def loop():
+	channel = client.get_channel(BOT_DATA_CHANNEL)
 	sndmsg = ''
 	for a in remind_list:
 		for i in a:
 			sndmsg = sndmsg + ' ' + str(i)
 		sndmsg = sndmsg + '\n'
-	await data_channel.send(sndmsg)
-	await command_channel.send(remind_list)
-	# 「/neko」と発言したら「にゃーん」が返る処理
-	if message.content == '/neko':
-		await message.channel.send('にゃーん')
-
+	await channel.send(sndmsg)
+loop.start()
 # Botの起動とDiscordサーバーへの接続
 client.run(TOKEN)
