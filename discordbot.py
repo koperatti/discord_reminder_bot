@@ -104,13 +104,13 @@ async def on_message(message):
 	if message.author.bot:
 		return
 	rtn_msg = list_process(message)
-	await command_channel.send(rtn_msg + '\n' + remind_list)
+	await command_channel.send(rtn_msg)
 # 一分に一回行う処理
 @tasks.loop(seconds=60)
 async def loop():
 	data_channel = client.get_channel(BOT_DATA_CHANNEL)
 	sndmsg = ''
-	if global remind_list_old == global remind_list:
+	if remind_list_old == global remind_list:
 		pass
 	else:
 		remind_list_old = remind_list
