@@ -60,7 +60,7 @@ def list_process(message):
 					rtn_msg = 'Format error in deadline'
 				else:
 					remind_list.append([task_name, subject, deadline])
-					log_msg = str(task_name) + ',' + str(subject) + ',' + str(deadline) + ' added'
+					rtn_msg = str(task_name) + ',' + str(subject) + ',' + str(deadline) + ' added'
 			else:
 				rtn_msg = 'Some element missed'
 		else:
@@ -76,12 +76,12 @@ def list_process(message):
 					break
 				counter = counter + 1
 			if detect:
-				log_msg = remind_list.pop(counter)[0] + 'deleted'
+				rtn_msg = remind_list.pop(counter)[0] + 'deleted'
 			else:
 				rtn_msg = 'could not find ' + str(command_list[0])
 		else:
 			rtn_msg = 'Too many elements'
-	return rtn_msg, log_msg
+	return rtn_msg
 
 # 接続に必要なオブジェクトを生成
 client = discord.Client()
@@ -99,10 +99,11 @@ async def on_ready():
 # メッセージ受信時に動作する処理
 @client.event
 async def on_message(message):
+	command_channel = client.get_channel(BOT_COMMAND_CHANNEL)
 	# メッセージ送信者がBotだった場合は無視する
 	if message.author.bot:
 		return
-	rtn_msg, log_msg = list_process(message)
+	rtn_msg = list_process(message)
 	await command_channel.send(rtn_msg)
 # 一分に一回行う処理
 @tasks.loop(seconds=60)
