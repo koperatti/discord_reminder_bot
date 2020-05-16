@@ -104,9 +104,6 @@ async def on_message(message):
 		return
 	rtn_msg, log_msg = list_process(message)
 	await command_channel.send(rtn_msg)
-	# 「/neko」と発言したら「にゃーん」が返る処理
-	if message.content == '/neko':
-		await message.channel.send('にゃーん')
 # 一分に一回行う処理
 @tasks.loop(seconds=60)
 async def loop():
