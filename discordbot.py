@@ -87,12 +87,13 @@ def list_process(message):
 client = discord.Client()
 remind_list = []
 
-log_channel = client.get_channel(BOT_LOG_CHANNEL)
-command_channel = client.get_channel(BOT_COMMAND_CHANNEL)
-data_channel = client.get_channel(BOT_DATA_CHANNEL)
+
 # 起動時に動作する処理
 @client.event
-async def on_ready():	
+async def on_ready():
+	log_channel = client.get_channel(BOT_LOG_CHANNEL)
+	command_channel = client.get_channel(BOT_COMMAND_CHANNEL)
+	data_channel = client.get_channel(BOT_DATA_CHANNEL)
 	await log_channel.send(str(started_time) + '(JST) Bot restarted!')
 
 # メッセージ受信時に動作する処理
