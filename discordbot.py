@@ -86,6 +86,7 @@ def list_process(message):
 
 # 接続に必要なオブジェクトを生成
 remind_list = []
+remind_list_old = ''
 client = discord.Client()
 
 
@@ -106,7 +107,7 @@ async def on_message(message):
 		return
 	rtn_msg = list_process(message)
 	await command_channel.send(rtn_msg)
-remind_list_old = ''
+
 # 一分に一回行う処理
 @tasks.loop(seconds=60)
 async def loop():
