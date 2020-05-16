@@ -59,7 +59,7 @@ def list_process(message):
 				elif deadline == 'Format error':
 					rtn_msg = 'Format error in deadline'
 				else:
-					remind_list.append([task_name, subject, deadline])
+					global remind_list.append([task_name, subject, deadline])
 					rtn_msg =  'Added ' + str(task_name) + ',' + str(subject) + ',' + str(deadline)
 			else:
 				rtn_msg = 'Some element missed'
@@ -76,7 +76,7 @@ def list_process(message):
 					break
 				counter = counter + 1
 			if detect:
-				rtn_msg = 'Deleted ' + remind_list.pop(counter)[0] 
+				rtn_msg = 'Deleted ' + global remind_list.pop(counter)[0] 
 			else:
 				rtn_msg = 'could not find ' + str(command_list[0])
 		else:
@@ -84,8 +84,8 @@ def list_process(message):
 	return rtn_msg
 
 # 接続に必要なオブジェクトを生成
-client = discord.Client()
 remind_list = []
+client = discord.Client()
 
 
 # 起動時に動作する処理
@@ -104,18 +104,21 @@ async def on_message(message):
 	if message.author.bot:
 		return
 	rtn_msg = list_process(message)
-	await command_channel.send(rtn_msg)
+	await command_channel.send(rtn_msg + '\n' + remind_list)
 # 一分に一回行う処理
 @tasks.loop(seconds=60)
 async def loop():
 	data_channel = client.get_channel(BOT_DATA_CHANNEL)
-	channel = client.get_channel(BOT_DATA_CHANNEL)
 	sndmsg = ''
-	for a in remind_list:
-		for i in a:
-			sndmsg = sndmsg + ' ' + str(i)
-		sndmsg = sndmsg + '\n'
-	await data_channel.send(sndmsg)
+	if global remind_list_old == global remind_list:
+		pass
+	else:
+		remind_list_old = remind_list
+		for a in global remind_list:
+			for i in a:
+				sndmsg = sndmsg + ' ' + str(i)
+			sndmsg = sndmsg + '\n'
+		await data_channel.send(sndmsg)
 loop.start()
 # Botの起動とDiscordサーバーへの接続
 client.run(TOKEN)
