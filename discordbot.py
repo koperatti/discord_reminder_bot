@@ -37,6 +37,7 @@ def time_format_check(date):
 	return date
 
 def list_process(message):
+	global remind_list
 	rtn_msg = ''
 	log_msg = ''
 	command = message.content
@@ -59,7 +60,7 @@ def list_process(message):
 				elif deadline == 'Format error':
 					rtn_msg = 'Format error in deadline'
 				else:
-					global remind_list.append([task_name, subject, deadline])
+					remind_list.append([task_name, subject, deadline])
 					rtn_msg =  'Added ' + str(task_name) + ',' + str(subject) + ',' + str(deadline)
 			else:
 				rtn_msg = 'Some element missed'
@@ -76,7 +77,7 @@ def list_process(message):
 					break
 				counter = counter + 1
 			if detect:
-				rtn_msg = 'Deleted ' + (global remind_list.pop(counter)[0]) 
+				rtn_msg = 'Deleted ' + remind_list.pop(counter)[0] 
 			else:
 				rtn_msg = 'could not find ' + str(command_list[0])
 		else:
@@ -108,13 +109,14 @@ async def on_message(message):
 # 一分に一回行う処理
 @tasks.loop(seconds=60)
 async def loop():
+	global remind_list
 	data_channel = client.get_channel(BOT_DATA_CHANNEL)
 	sndmsg = ''
-	if remind_list_old == global remind_list:
+	if remind_list_old == remind_list:
 		pass
 	else:
 		remind_list_old = remind_list
-		for a in global remind_list:
+		for a in remind_list:
 			for i in a:
 				sndmsg = sndmsg + ' ' + str(i)
 			sndmsg = sndmsg + '\n'
