@@ -76,7 +76,7 @@ def list_process(message):
 					break
 				counter = counter + 1
 			if detect:
-				rtn_msg = 'Deleted ' + global remind_list.pop(counter)[0] 
+				rtn_msg = 'Deleted ' + (global remind_list.pop(counter)[0]) 
 			else:
 				rtn_msg = 'could not find ' + str(command_list[0])
 		else:
