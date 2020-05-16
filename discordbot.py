@@ -81,7 +81,7 @@ def list_process(message):
 				rtn_msg = 'could not find ' + str(command_list[0])
 		else:
 			rtn_msg = 'Too many elements'
-	return rtn_msg log_msg
+	return rtn_msg, log_msg
 
 # 接続に必要なオブジェクトを生成
 client = discord.Client()
