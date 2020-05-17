@@ -28,7 +28,8 @@ No_astarisk = ['*(アスタリスク)は入れてはならない！これは当�
 	       '君は *(アスタリスク)を使うには若すぎるよ!',
 	       'すまないねぇ、うちでは *(アスタリスク)は禁止なんだよ']
 No_hash = ['やめてくれ！ #はTwitterだけで十分だ！',
-	   '##を使うな']
+	   '#__ハッシュタグを使うな__',
+	   '#(ハッシュ)と♯(シャープ)の違いも分からないのにハッシュを使うんじゃない！']
 Too_many_elements = ['ブブー！要素が多すぎるよ',
 		     '君の人生が満ち足りてても指定された以上の要素を入力する必要はないよ?',
 		     'ゲフ...おなか一杯']
@@ -94,34 +95,37 @@ def list_process(message):
 	command = message.content
 	if '/add' in command:
 		if '*' not in command:
-			command_list = command.split()[1:]
-			if len(command_list) == 3:
-				task_name = command_list[0]
-				subject = command_list[1]
-				deadline = time_format_check(command_list[2])
-				counter = 0
-				detect = False
-				for i in remind_list:
-					if task_name == i[0]:
-						detect = True
-						break
-					counter = counter + 1
-				if detect:
-					task = task_name
-					rtn_msg = random.choice(Same_name)
-					rtn_msg = hash_replace(task, rtn_msg)
-				elif deadline == 'Format error':
-					rtn_msg = random.choice(Format_error_deadline)
-				else:
-					remind_list.append([task_name, subject, deadline])
-					task = str(task_name)
-					rtn_msg = random.choice(Added)
-					rtn_msg = hash_replace(task, rtn_msg)
-					change = True
-			elif len(command_list) >= 4:
-				rtn_msg = random.choice(Too_many_elements)
-			elif len(command_list) <= 2:
-				rtn_msg = random.choice(Element_missed)
+			if '#' not in command:
+				command_list = command.split()[1:]
+				if len(command_list) == 3:
+					task_name = command_list[0]
+					subject = command_list[1]
+					deadline = time_format_check(command_list[2])
+					counter = 0
+					detect = False
+					for i in remind_list:
+						if task_name == i[0]:
+							detect = True
+							break
+						counter = counter + 1
+					if detect:
+						task = task_name
+						rtn_msg = random.choice(Same_name)
+						rtn_msg = hash_replace(task, rtn_msg)
+					elif deadline == 'Format error':
+						rtn_msg = random.choice(Format_error_deadline)
+					else:
+						remind_list.append([task_name, subject, deadline])
+						task = str(task_name)
+						rtn_msg = random.choice(Added)
+						rtn_msg = hash_replace(task, rtn_msg)
+						change = True
+				elif len(command_list) >= 4:
+					rtn_msg = random.choice(Too_many_elements)
+				elif len(command_list) <= 2:
+					rtn_msg = random.choice(Element_missed)
+			else:
+				rtn_msg = random.choice(No_hash)
 		else:
 			rtn_msg = random.choice(No_astarisk)
 	elif '/remove' in command:
