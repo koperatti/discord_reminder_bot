@@ -130,7 +130,7 @@ async def loop():
 			sndmsg = sndmsg + '\n'
 		
 		data_channel = client.get_channel(BOT_DATA_CHANNEL)
-		msgs = await data_channel.history(limit=123).flatten()
+		msgs = await data_channel.history().flatten()
 		await client.delete_messages(msgs)
 		await data_channel.send(sndmsg)
 loop.start()
