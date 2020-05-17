@@ -110,7 +110,7 @@ async def on_message(message):
 		rtn_msg = list_process(message)
 		await command_channel.send(rtn_msg)
 	except:
-		await log_channel.send(sys.exc_info())
+		await log_channel.send(str(sys.exc_info()))
 # 一分に一回行う処理
 @tasks.loop(seconds=60)
 async def loop():
