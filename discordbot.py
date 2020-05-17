@@ -4,6 +4,7 @@ import sys
 import datetime
 import traceback
 from discord.ext import tasks
+import asyncio
 
 TOKEN = os.environ['DISCORD_BOT_TOKEN']
 DIFF_JST_FROM_UTC = 9
