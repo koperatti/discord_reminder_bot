@@ -15,6 +15,7 @@ BOT_COMMAND_CHANNEL = 710335701459271799
 BOT_DATA_CHANNEL = 710752335781036073
 remind_list = []
 remind_list_old = []
+task = ''
 Format_error_deadline =['ブブー！締切の日時のフォーマットが違います',
 			'ワタシ、ソノニチジ ワカラナイデス',
 			'残念！締切の日時のフォーマットエラーだ！']
