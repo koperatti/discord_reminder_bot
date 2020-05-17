@@ -131,7 +131,7 @@ async def loop():
 		
 		data_channel = client.get_channel(BOT_DATA_CHANNEL)
 		msgs = await data_channel.history().flatten()
-		await data_channel.delete(msgs)
+		await msgs.delete()
 		await data_channel.send(sndmsg)
 loop.start()
 # Botの起動とDiscordサーバーへの接続
