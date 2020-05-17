@@ -117,7 +117,7 @@ def list_process(message):
 					task = str(task_name)
 					rtn_msg = random.choice(Added)
 					rtn_msg = hash_replace(task, rtn_msg)
-					check = True
+					change = True
 			elif len(command_list) >= 4:
 				rtn_msg = random.choice(Too_many_elements)
 			elif len(command_list) <= 2:
