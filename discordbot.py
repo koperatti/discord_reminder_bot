@@ -118,7 +118,7 @@ async def on_message(message):
 @tasks.loop(seconds=60)
 async def loop():
 	global remind_list_old
-	sndmsg = ''
+	sndmsg = '\n'
 	if remind_list_old == remind_list:
 		pass
 	else:
@@ -127,7 +127,10 @@ async def loop():
 			for i in a:
 				sndmsg = sndmsg + ' ' + str(i)
 			sndmsg = sndmsg + '\n'
+		
 		data_channel = client.get_channel(BOT_DATA_CHANNEL)
+		msgs = [msg async for msg in client.logs_from(data_channel, limit=(delcmd_int+1))]
+		await client.delete_messages(msgs)
 		await data_channel.send(sndmsg)
 loop.start()
 # Botの起動とDiscordサーバーへの接続
