@@ -164,7 +164,9 @@ async def list_updater():
 				sndmsg = sndmsg + '\n'
 			remind_list_old = remind_list
 			data_channel = client.get_channel(BOT_DATA_CHANNEL)
-			await data_channel.purge()
+			def is_me(m):
+				return m.author == client.user
+			await channel.purge(limit=100, check=is_me)
 			await data_channel.send(sndmsg)
 	except:
 		log_channel = client.get_channel(BOT_LOG_CHANNEL)
