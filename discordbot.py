@@ -30,23 +30,23 @@ No_astarisk = ['*(アスタリスク)は入れてはならない！これは当�
 Too_many_elements = ['ブブー！要素が多すぎるよ',
 		     '君の人生が満ち足りてても指定された以上の要素を入力する必要はないよ?',
 		     'ゲフ...おなか一杯']
-Added = [str(task) + ' を課題リストにぶっこんでやったぜ！',
-	 str(task) + ' は課題リストの一部となった！',
-	 str(task) + ' は課題リストに吸収された！',
-	 str(task) + ' を課題リストにシューーーーート！！超！エキサイティン！！！',
-	 'シュウゥゥゥゥ... ' + str(task) + ' は課題リストに吸い込まれていった！']
-Removed = ['あばよ、' + str(task) + '、お前の役目はもう終わりなんだ、 ',
-	   '達者でな、' + str(task) + '、またどこかで会おうぜ！',
-	   '俺たちが再び画面を見たとき、 ' + str(task) + 'はもういなかった...',
-	   str(task) + 'はこの世から抹殺された！',
-	   'お前は生まれるべきでなかったんだよ... ' + str(task) + '君?',
-	   'いけっ、ピカチュウ、 ' + str(task) + 'に十万ボルトだ！']
+Added = ['# を課題リストにぶっこんでやったぜ！',
+	 '# は課題リストの一部となった！',
+	 '# は課題リストに吸収された！',
+	 '# を課題リストにシューーーーート！！超！エキサイティン！！！',
+	 'シュウゥゥゥゥ... # は課題リストに吸い込まれていった！']
+Removed = ['あばよ、#、お前の役目はもう終わりなんだ、 ',
+	   '達者でな、#、またどこかで会おうぜ！',
+	   '俺たちが再び画面を見たとき、#はもういなかった...',
+	   '# はこの世から抹殺された！',
+	   'お前は生まれるべきでなかったんだよ... #君?',
+	   'いけっ、ピカチュウ、#に十万ボルトだ！']
 Not_found = ['404エラー！この意味が分かるかな?',
-	     str(task) + ' は迷子だ！見つからないよ！',
-	     str(task) + '?そんなやついたっけな?']
-Same_name = [str(task) + 'ならもうここにおるぞ！さては偽物だな！',
-	     'どうやらあなたは課題リストをよく見ていないようだねぇ、' + str(task) + 'はとっくに登録済みだよ',
-	     '君の名は?\n' + str(task) + '。\nえっ、同じだ！']
+	     '# は迷子だ！見つからないよ！',
+	     '#?そんなやついたっけな?']
+Same_name = [#ならもうここにおるぞ！さては偽物だな！',
+	     'どうやらあなたは課題リストをよく見ていないようだねぇ、#はとっくに登録済みだよ',
+	     '\n君の名は?\n#。\nえっ、同じだ！']
 
 # ↓時刻の整形をする関数
 def time_format_check(date):
@@ -74,6 +74,10 @@ def time_format_check(date):
 			date = 'Format error'
 	return date
 
+def hash_replace(task,strings):
+	idx = strings.find(r'#')
+	result = src[:idx] + str(task) + src[idx+len(task):]
+	return result
 # ↓コマンドの解釈をする関数
 def list_process(message):
 	global remind_list
@@ -98,12 +102,14 @@ def list_process(message):
 				if detect:
 					task = task_name
 					rtn_msg = random.choice(Same_name)
+					rtn_msg = hash_replace(task, rtn_msg)
 				elif deadline == 'Format error':
 					rtn_msg = random.choice(Format_error_deadline)
 				else:
 					remind_list.append([task_name, subject, deadline])
 					task = str(task_name)
 					rtn_msg = random.choice(Added)
+					rtn_msg = hash_replace(task, rtn_msg)
 			elif len(command_list) >= 4:
 				rtn_msg = random.choice(Too_many_elements)
 			elif len(command_list) <= 2:
@@ -123,9 +129,11 @@ def list_process(message):
 			if detect:
 				task = remind_list.pop(counter)[0]
 				rtn_msg = random.choice(Removed)
+				rtn_msg = hash_replace(task, rtn_msg)
 			else:
 				task = str(command_list[0])
-				rtn_msg = random.choice(Not_found) 
+				rtn_msg = random.choice(Not_found)
+				rtn_msg = hash_replace(task, rtn_msg)
 		else:
 			rtn_msg = random.choice(Too_many_elements)
 	return rtn_msg
