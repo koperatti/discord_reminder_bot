@@ -116,7 +116,7 @@ async def on_message(message):
 		log_channel = client.get_channel(BOT_LOG_CHANNEL)
 		await log_channel.send(str(sys.exc_info()))
 # 一分に一回行う処理
-@tasks.loop(seconds=0)
+@tasks.loop(seconds=10)
 async def loop():
 	global remind_list_old
 	sndmsg = '\n'
