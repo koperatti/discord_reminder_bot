@@ -87,7 +87,8 @@ def hash_replace(task,strings):
 def list_process(message):
 	global remind_list
 	global task
-	global change = False
+	global change
+	change = False
 	rtn_msg = ''
 	log_msg = ''
 	command = message.content
