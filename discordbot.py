@@ -3,6 +3,7 @@ import os
 import sys
 import datetime
 import traceback
+import random
 from discord.ext import tasks
 import asyncio
 
@@ -14,6 +15,37 @@ BOT_COMMAND_CHANNEL = 710335701459271799
 BOT_DATA_CHANNEL = 710752335781036073
 remind_list = []
 remind_list_old = []
+Format_error_deadline =['ブブー！締切の日時のフォーマットが違います',
+			'ワタシ、ソノニチジ ワカラナイデス',
+			'残念！締切の日時のフォーマットエラーだ！']
+Element_missed = ['あれ...何かが足りない...',
+		  'ブブー！ヨウソガタリナイアルヨ',
+		  '要素が足りないんだよおおぉぉぉぉ！！']
+No_astarisk = ['*(アスタリスク)は入れてはならない！これは当局からの命令だ！',
+	       'ごめん、僕 *(アスタリスク)嫌いなんだ...',
+	       '*(アスタリスク)は諸悪の根源。間違って使うとPCもぶっ飛ぶんだぜ?',
+	       '君は *(アスタリスク)を使うには若すぎるよ!'
+	       'すまないねぇ、うちでは *(アスタリスク)は禁止なんだよ']
+Too_many_elements = ['ブブー！要素が多すぎるよ',
+		     '君の人生が満ち足りてても指定された以上の要素を入力する必要はないよ?',
+		     'ゲフ...おなか一杯']
+Added = [str(task) + ' を課題リストにぶっこんでやったぜ！',
+	 str(task) + ' は課題リストの一部となった！',
+	 str(task) + ' は課題リストに吸収された！',
+	 str(task) + ' を課題リストにシューーーーート！！超！エキサイティン！！！',
+	 'シュウゥゥゥゥ... ' + str(task) + ' は課題リストに吸い込まれていった！']
+Removed = ['あばよ、' + str(task) + '、お前の役目はもう終わりなんだ、 ',
+	   '達者でな、' + str(task) + '、またどこかで会おうぜ！',
+	   '俺たちが再び画面を見たとき、 ' + str(task) + 'はもういなかった...',
+	   str(task) + 'はこの世から抹殺された！',
+	   'お前は生まれるべきでなかったんだよ... ' + str(task) + '君?',
+	   'いけっ、ピカチュウ、 ' + str(task) + 'に十万ボルトだ！']
+Not_found = ['404エラー！この意味が分かるかな?',
+	     str(task) + ' は迷子だ！見つからないよ！',
+	     str(task) + '?そんなやついたっけな?']
+Same_name = [str(task) + 'ならもうここにおるぞ！さては偽物だな！',
+	     'どうやらあなたは課題リストをよく見ていないようだねぇ、' + str(task) + 'はとっくに登録済みだよ',
+	     '君の名は?\n' + str(task) + '。\nえっ、同じだ！']
 
 # ↓時刻の整形をする関数
 def time_format_check(date):
@@ -62,16 +94,20 @@ def list_process(message):
 						break
 					counter = counter + 1
 				if detect:
-					rtn_msg = 'Same name detected! Try with other name.'
+					task = task_name
+					rtn_msg = random.choice(Same_name)
 				elif deadline == 'Format error':
-					rtn_msg = 'Format error in deadline'
+					rtn_msg = random.choice(Format_error_deadline)
 				else:
 					remind_list.append([task_name, subject, deadline])
-					rtn_msg =  'Added ' + str(task_name) + ',' + str(subject) + ',' + str(deadline)
-			else:
-				rtn_msg = 'Some element missed'
+					task = str(task_name)
+					rtn_msg = random.choice(Added)
+			elif len(command_list) >= 4:
+				rtn_msg = random.choice(Too_many_elements)
+			elif len(command_list) <= 2:
+				rtn_msg = random.choice(Element_missed)
 		else:
-			rtn_msg = 'You can not use * in the statement'
+			rtn_msg = random.choice(No_astarisk)
 	elif '/remove' in command:
 		command_list = command.split()[1:]
 		if len(command_list) == 1:
@@ -83,11 +119,13 @@ def list_process(message):
 					break
 				counter = counter + 1
 			if detect:
-				rtn_msg = 'Deleted ' + remind_list.pop(counter)[0] 
+				task = remind_list.pop(counter)[0]
+				rtn_msg = random.choice(Removed)
 			else:
-				rtn_msg = 'could not find ' + str(command_list[0])
+				task = str(command_list[0])
+				rtn_msg = random.choice(Not_found) 
 		else:
-			rtn_msg = 'Too many elements'
+			rtn_msg = random.choice(Too_many_elements)
 	return rtn_msg
 
 # 接続に必要なオブジェクトを生成
@@ -131,7 +169,7 @@ async def loop():
 				sndmsg = sndmsg + '\n'
 			remind_list_old = remind_list
 			data_channel = client.get_channel(BOT_DATA_CHANNEL)
-			await data_channel.purge(limit=None)
+			await data_channel.purge()
 			await data_channel.send(sndmsg)
 	except:
 		log_channel = client.get_channel(BOT_LOG_CHANNEL)
