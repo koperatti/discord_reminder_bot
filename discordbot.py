@@ -111,26 +111,31 @@ async def on_message(message):
 			return
 		rtn_msg = list_process(message)
 		command_channel = client.get_channel(BOT_COMMAND_CHANNEL)
-		await command_channel.send(rtn_msg)
+		if rtn_msg:
+			await command_channel.send(rtn_msg)
 	except:
 		log_channel = client.get_channel(BOT_LOG_CHANNEL)
 		await log_channel.send(str(sys.exc_info()))
 # 一分に一回行う処理
 @tasks.loop(seconds=10)
 async def loop():
-	global remind_list_old
-	sndmsg = '\n'
-	if remind_list_old == remind_list:
-		pass
-	else:
-		for a in remind_list:
-			for i in a:
-				sndmsg = sndmsg + '   ' + str(i)
-			sndmsg = sndmsg + '\n'
-		remind_list_old = remind_list
-		data_channel = client.get_channel(BOT_DATA_CHANNEL)
-		await data_channel.purge(limit=None)
-		await data_channel.send(sndmsg)
+	try:
+		global remind_list_old
+		sndmsg = '\n'
+		if remind_list_old == remind_list:
+			pass
+		else:
+			for a in remind_list:
+				for i in a:
+					sndmsg = sndmsg + '   ' + str(i)
+				sndmsg = sndmsg + '\n'
+			remind_list_old = remind_list
+			data_channel = client.get_channel(BOT_DATA_CHANNEL)
+			await data_channel.purge(limit=None)
+			await data_channel.send(sndmsg)
+	except:
+		log_channel = client.get_channel(BOT_LOG_CHANNEL)
+		await log_channel.send(str(sys.exc_info()))
 loop.start()
 # Botの起動とDiscordサーバーへの接続
 client.run(TOKEN)
