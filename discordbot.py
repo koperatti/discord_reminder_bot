@@ -166,7 +166,7 @@ async def list_updater():
 			data_channel = client.get_channel(BOT_DATA_CHANNEL)
 			def is_me(m):
 				return m.author == client.user
-			await channel.purge(limit=100, check=is_me)
+			await data_channel.purge(limit=100, check=is_me)
 			await data_channel.send(sndmsg)
 	except:
 		log_channel = client.get_channel(BOT_LOG_CHANNEL)
