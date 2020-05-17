@@ -160,7 +160,7 @@ async def on_ready():
 	log_channel = client.get_channel(BOT_LOG_CHANNEL)
 	data_channel = client.get_channel(BOT_DATA_CHANNEL)
 	await log_channel.send(str(started_time) + '(JST) Bot restarted!')
-	await client.change_presence(activity=discord.Game(name='稼働中'))
+	await client.change_presence(activity=discord.Game(name='課題リマインディング'))
 
 # メッセージ受信時に動作する処理
 @client.event
