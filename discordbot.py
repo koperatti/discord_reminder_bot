@@ -11,9 +11,6 @@ started_time = datetime.datetime.utcnow() + datetime.timedelta(hours=DIFF_JST_FR
 BOT_LOG_CHANNEL = 710813437675962449
 BOT_COMMAND_CHANNEL = 710335701459271799
 BOT_DATA_CHANNEL = 710752335781036073
-log_channel = client.get_channel(BOT_LOG_CHANNEL)
-command_channel = client.get_channel(BOT_COMMAND_CHANNEL)
-data_channel = client.get_channel(BOT_DATA_CHANNEL)
 remind_list = []
 remind_list_old = []
 
@@ -94,7 +91,9 @@ def list_process(message):
 
 # 接続に必要なオブジェクトを生成
 client = discord.Client()
-
+log_channel = client.get_channel(BOT_LOG_CHANNEL)
+command_channel = client.get_channel(BOT_COMMAND_CHANNEL)
+data_channel = client.get_channel(BOT_DATA_CHANNEL)
 
 # 起動時に動作する処理
 @client.event
