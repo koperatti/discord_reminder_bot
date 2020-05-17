@@ -125,11 +125,11 @@ async def loop():
 		remind_list_old = remind_list
 		for a in remind_list:
 			for i in a:
-				sndmsg = sndmsg + ' ' + str(i)
+				sndmsg = sndmsg + '   ' + str(i)
 			sndmsg = sndmsg + '\n'
 		
 		data_channel = client.get_channel(BOT_DATA_CHANNEL)
-		msgs = [msg async for msg in client.logs_from(data_channel, limit=(delcmd_int+1))]
+		msgs = [msg async for msg in client.logs_from(data_channel, limit=20)]
 		await client.delete_messages(msgs)
 		await data_channel.send(sndmsg)
 loop.start()
