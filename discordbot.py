@@ -76,7 +76,7 @@ def time_format_check(date):
 
 def hash_replace(task,strings):
 	idx = strings.find(r'#')
-	result = src[:idx] + str(task) + src[idx+len(task):]
+	result = strings[:idx] + str(task) + strings[idx+len(task):]
 	return result
 # ↓コマンドの解釈をする関数
 def list_process(message):
