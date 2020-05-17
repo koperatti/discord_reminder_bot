@@ -196,6 +196,5 @@ async def on_message(message):
 		log_channel = client.get_channel(BOT_LOG_CHANNEL)
 		await log_channel.send(str(sys.exc_info()))
 
-loop.start()
 # Botの起動とDiscordサーバーへの接続
 client.run(TOKEN)
