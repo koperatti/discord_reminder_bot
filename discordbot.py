@@ -1,5 +1,6 @@
 import discord
 import os
+import sys
 import datetime
 import traceback
 from discord.ext import tasks
@@ -10,7 +11,13 @@ started_time = datetime.datetime.utcnow() + datetime.timedelta(hours=DIFF_JST_FR
 BOT_LOG_CHANNEL = 710813437675962449
 BOT_COMMAND_CHANNEL = 710335701459271799
 BOT_DATA_CHANNEL = 710752335781036073
+log_channel = client.get_channel(BOT_LOG_CHANNEL)
+command_channel = client.get_channel(BOT_COMMAND_CHANNEL)
+data_channel = client.get_channel(BOT_DATA_CHANNEL)
+remind_list = []
+remind_list_old = []
 
+# ↓時刻の整形をする関数
 def time_format_check(date):
 	hifun_count = date.count('-')
 	coron_count = date.count(':')
@@ -36,6 +43,7 @@ def time_format_check(date):
 			date = 'Format error'
 	return date
 
+# ↓コマンドの解釈をする関数
 def list_process(message):
 	global remind_list
 	rtn_msg = ''
@@ -85,35 +93,30 @@ def list_process(message):
 	return rtn_msg
 
 # 接続に必要なオブジェクトを生成
-remind_list = []
-remind_list_old = ''
 client = discord.Client()
 
 
 # 起動時に動作する処理
 @client.event
 async def on_ready():
-	log_channel = client.get_channel(BOT_LOG_CHANNEL)
-	command_channel = client.get_channel(BOT_COMMAND_CHANNEL)
-	data_channel = client.get_channel(BOT_DATA_CHANNEL)
 	await log_channel.send(str(started_time) + '(JST) Bot restarted!')
 
 # メッセージ受信時に動作する処理
 @client.event
 async def on_message(message):
-	command_channel = client.get_channel(BOT_COMMAND_CHANNEL)
-	# メッセージ送信者がBotだった場合は無視する
-	if message.author.bot:
-		return
-	rtn_msg = list_process(message)
-	await command_channel.send(rtn_msg)
-
+	try:
+		# メッセージ送信者がBotだった場合は無視する
+		if message.author.bot:
+			return
+		rtn_msg = list_process(message)
+		await command_channel.send(rtn_msg)
+	except:
+		await log_channel.send(sys.exc_info())
 # 一分に一回行う処理
 @tasks.loop(seconds=60)
 async def loop():
-	global remind_list
+	remind_list
 	global remind_list_old
-	data_channel = client.get_channel(BOT_DATA_CHANNEL)
 	sndmsg = ''
 	if remind_list_old == remind_list:
 		pass
