@@ -149,30 +149,9 @@ log_channel = client.get_channel(BOT_LOG_CHANNEL)
 command_channel = client.get_channel(BOT_COMMAND_CHANNEL)
 data_channel = client.get_channel(BOT_DATA_CHANNEL)
 
-# 起動時に動作する処理
-@client.event
-async def on_ready():
-	log_channel = client.get_channel(BOT_LOG_CHANNEL)
-	await log_channel.send(str(started_time) + '(JST) Bot restarted!')
-
-# メッセージ受信時に動作する処理
-@client.event
-async def on_message(message):
-	try:
-		# メッセージ送信者がBotだった場合は無視する
-		if message.author.bot:
-			return
-		if message.channel.id == BOT_COMMAND_CHANNEL:
-			rtn_msg = list_process(message)
-			command_channel = client.get_channel(BOT_COMMAND_CHANNEL)
-			if rtn_msg:
-				await command_channel.send(rtn_msg)
-	except:
-		log_channel = client.get_channel(BOT_LOG_CHANNEL)
-		await log_channel.send(str(sys.exc_info()))
 # 一分に一回行う処理
 @tasks.loop(seconds=10)
-async def loop():
+async def list_updater():
 	try:
 		global remind_list_old
 		sndmsg = '\n'
@@ -190,6 +169,33 @@ async def loop():
 	except:
 		log_channel = client.get_channel(BOT_LOG_CHANNEL)
 		await log_channel.send(str(sys.exc_info()))
+
+# 起動時に動作する処理
+@client.event
+async def on_ready():
+	log_channel = client.get_channel(BOT_LOG_CHANNEL)
+	await log_channel.send(str(started_time) + '(JST) Bot restarted!')
+	try:
+		list_updater.start()
+	except:
+		await log_channel.send(str(sys.exc_info()))
+
+# メッセージ受信時に動作する処理
+@client.event
+async def on_message(message):
+	try:
+		# メッセージ送信者がBotだった場合は無視する
+		if message.author.bot:
+			return
+		if message.channel.id == BOT_COMMAND_CHANNEL:
+			rtn_msg = list_process(message)
+			command_channel = client.get_channel(BOT_COMMAND_CHANNEL)
+			if rtn_msg:
+				await command_channel.send(rtn_msg)
+	except:
+		log_channel = client.get_channel(BOT_LOG_CHANNEL)
+		await log_channel.send(str(sys.exc_info()))
+
 loop.start()
 # Botの起動とDiscordサーバーへの接続
 client.run(TOKEN)
