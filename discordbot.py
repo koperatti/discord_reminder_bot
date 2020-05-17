@@ -14,7 +14,7 @@ BOT_LOG_CHANNEL = 710813437675962449
 BOT_COMMAND_CHANNEL = 710335701459271799
 BOT_DATA_CHANNEL = 710752335781036073
 remind_list = []
-remind_list_old = []
+change = False
 task = ''
 Format_error_deadline =['ブブー！締切の日時のフォーマットが違います',
 			'ワタシ、ソノニチジ ワカラナイデス',
@@ -87,6 +87,7 @@ def hash_replace(task,strings):
 def list_process(message):
 	global remind_list
 	global task
+	global change = False
 	rtn_msg = ''
 	log_msg = ''
 	command = message.content
@@ -115,6 +116,7 @@ def list_process(message):
 					task = str(task_name)
 					rtn_msg = random.choice(Added)
 					rtn_msg = hash_replace(task, rtn_msg)
+					check = True
 			elif len(command_list) >= 4:
 				rtn_msg = random.choice(Too_many_elements)
 			elif len(command_list) <= 2:
@@ -135,6 +137,7 @@ def list_process(message):
 				task = remind_list.pop(counter)[0]
 				rtn_msg = random.choice(Removed)
 				rtn_msg = hash_replace(task, rtn_msg)
+				change = True
 			else:
 				task = str(command_list[0])
 				rtn_msg = random.choice(Not_found)
@@ -156,6 +159,7 @@ async def on_ready():
 	log_channel = client.get_channel(BOT_LOG_CHANNEL)
 	data_channel = client.get_channel(BOT_DATA_CHANNEL)
 	await log_channel.send(str(started_time) + '(JST) Bot restarted!')
+	await client.change_presence(activity=discord.Game(name='稼働中'))
 
 # メッセージ受信時に動作する処理
 @client.event
@@ -170,11 +174,8 @@ async def on_message(message):
 			command_channel = client.get_channel(BOT_COMMAND_CHANNEL)
 			if rtn_msg:
 				await command_channel.send(rtn_msg)
-			
 			sndmsg = '\n'
-			if remind_list_old == remind_list:
-				pass
-			else:
+			if change:
 				for a in remind_list:
 					for i in a:
 						sndmsg = sndmsg + '   ' + str(i)
