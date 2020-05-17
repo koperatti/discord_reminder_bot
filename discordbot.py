@@ -77,6 +77,7 @@ def time_format_check(date):
 # ↓コマンドの解釈をする関数
 def list_process(message):
 	global remind_list
+	global task
 	rtn_msg = ''
 	log_msg = ''
 	command = message.content
