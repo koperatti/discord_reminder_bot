@@ -98,6 +98,7 @@ data_channel = client.get_channel(BOT_DATA_CHANNEL)
 # 起動時に動作する処理
 @client.event
 async def on_ready():
+	log_channel = client.get_channel(BOT_LOG_CHANNEL)
 	await log_channel.send(str(started_time) + '(JST) Bot restarted!')
 
 # メッセージ受信時に動作する処理
@@ -108,13 +109,14 @@ async def on_message(message):
 		if message.author.bot:
 			return
 		rtn_msg = list_process(message)
+		command_channel = client.get_channel(BOT_COMMAND_CHANNEL)
 		await command_channel.send(rtn_msg)
 	except:
+		log_channel = client.get_channel(BOT_LOG_CHANNEL)
 		await log_channel.send(str(sys.exc_info()))
 # 一分に一回行う処理
 @tasks.loop(seconds=60)
 async def loop():
-	remind_list
 	global remind_list_old
 	sndmsg = ''
 	if remind_list_old == remind_list:
@@ -125,6 +127,7 @@ async def loop():
 			for i in a:
 				sndmsg = sndmsg + ' ' + str(i)
 			sndmsg = sndmsg + '\n'
+		data_channel = client.get_channel(BOT_DATA_CHANNEL)
 		await data_channel.send(sndmsg)
 loop.start()
 # Botの起動とDiscordサーバーへの接続
