@@ -27,6 +27,8 @@ No_astarisk = ['*(アスタリスク)は入れてはならない！これは当�
 	       '*(アスタリスク)は諸悪の根源。間違って使うとPCもぶっ飛ぶんだぜ?',
 	       '君は *(アスタリスク)を使うには若すぎるよ!',
 	       'すまないねぇ、うちでは *(アスタリスク)は禁止なんだよ']
+No_hash = ['やめてくれ！ #はTwitterだけで十分だ！',
+	   '##を使うな']
 Too_many_elements = ['ブブー！要素が多すぎるよ',
 		     '君の人生が満ち足りてても指定された以上の要素を入力する必要はないよ?',
 		     'ゲフ...おなか一杯']
@@ -34,8 +36,11 @@ Added = ['# を課題リストにぶっこんでやったぜ！',
 	 '# は課題リストの一部となった！',
 	 '# は課題リストに吸収された！',
 	 '# を課題リストにシューーーーート！！超！エキサイティン！！！',
-	 'シュウゥゥゥゥ... # は課題リストに吸い込まれていった！']
-Removed = ['あばよ、#、お前の役目はもう終わりなんだ、 ',
+	 'シュウゥゥゥゥ... # は課題リストに吸い込まれていった！',
+	 '# が課題リストに飛び乗りました',
+	 '# が課題リストに滑り込みました',
+	 '気をつけろ！ # が課題リストにお出ましだ！']
+Removed = ['あばよ、#、お前の役目はもう終わりなんだ。',
 	   '達者でな、#、またどこかで会おうぜ！',
 	   '俺たちが再び画面を見たとき、#はもういなかった...',
 	   '# はこの世から抹殺された！',
@@ -157,10 +162,11 @@ async def on_message(message):
 		# メッセージ送信者がBotだった場合は無視する
 		if message.author.bot:
 			return
-		rtn_msg = list_process(message)
-		command_channel = client.get_channel(BOT_COMMAND_CHANNEL)
-		if rtn_msg:
-			await command_channel.send(rtn_msg)
+		if message.channel.id == BOT_COMMAND_CHANNEL:
+			rtn_msg = list_process(message)
+			command_channel = client.get_channel(BOT_COMMAND_CHANNEL)
+			if rtn_msg:
+				await command_channel.send(rtn_msg)
 	except:
 		log_channel = client.get_channel(BOT_LOG_CHANNEL)
 		await log_channel.send(str(sys.exc_info()))
