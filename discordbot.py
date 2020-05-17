@@ -159,6 +159,7 @@ async def on_ready():
 
 # メッセージ受信時に動作する処理
 @client.event
+global remind_list_old
 async def on_message(message):
 	try:
 		# メッセージ送信者がBotだった場合は無視する
