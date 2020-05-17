@@ -149,28 +149,30 @@ log_channel = client.get_channel(BOT_LOG_CHANNEL)
 command_channel = client.get_channel(BOT_COMMAND_CHANNEL)
 data_channel = client.get_channel(BOT_DATA_CHANNEL)
 
-# 一分に一回行う処理
-@tasks.loop(seconds=10)
+# 10秒に一回行う処理
 async def list_updater():
-	try:
-		global remind_list_old
-		sndmsg = '\n'
-		if remind_list_old == remind_list:
-			pass
-		else:
-			for a in remind_list:
-				for i in a:
-					sndmsg = sndmsg + '   ' + str(i)
-				sndmsg = sndmsg + '\n'
-			remind_list_old = remind_list
-			data_channel = client.get_channel(BOT_DATA_CHANNEL)
-			def is_me(m):
-				return m.author == client.user
-			await data_channel.purge(limit=100, check=is_me)
-			await data_channel.send(sndmsg)
-	except:
-		log_channel = client.get_channel(BOT_LOG_CHANNEL)
-		await log_channel.send(str(sys.exc_info()))
+	while True:
+		try:
+			global remind_list_old
+			sndmsg = '\n'
+			if remind_list_old == remind_list:
+				pass
+			else:
+				for a in remind_list:
+					for i in a:
+						sndmsg = sndmsg + '   ' + str(i)
+					sndmsg = sndmsg + '\n'
+				remind_list_old = remind_list
+				data_channel = client.get_channel(BOT_DATA_CHANNEL)
+				def is_me(m):
+					return m.author == client.user
+				await data_channel.purge(limit=100, check=is_me)
+				await data_channel.send(sndmsg)
+			await asyncio.sleep(10)
+		except:
+			log_channel = client.get_channel(BOT_LOG_CHANNEL)
+			await log_channel.send(str(sys.exc_info()))
+			break
 
 # 起動時に動作する処理
 @client.event
@@ -179,7 +181,7 @@ async def on_ready():
 	data_channel = client.get_channel(BOT_DATA_CHANNEL)
 	await log_channel.send(str(started_time) + '(JST) Bot restarted!')
 	try:
-		list_updater.start()
+		asyncio.ensure_future(list_updater())
 	except:
 		await log_channel.send(str(sys.exc_info()))
 
