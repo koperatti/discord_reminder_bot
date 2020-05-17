@@ -116,18 +116,18 @@ async def on_message(message):
 		log_channel = client.get_channel(BOT_LOG_CHANNEL)
 		await log_channel.send(str(sys.exc_info()))
 # 一分に一回行う処理
-@tasks.loop(seconds=60)
+@tasks.loop(seconds=0)
 async def loop():
 	global remind_list_old
 	sndmsg = '\n'
 	if remind_list_old == remind_list:
 		pass
 	else:
-		remind_list_old = remind_list
 		for a in remind_list:
 			for i in a:
 				sndmsg = sndmsg + '   ' + str(i)
 			sndmsg = sndmsg + '\n'
+		remind_list_old = remind_list
 		data_channel = client.get_channel(BOT_DATA_CHANNEL)
 		await data_channel.purge(limit=None)
 		await data_channel.send(sndmsg)
