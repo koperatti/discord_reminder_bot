@@ -221,8 +221,10 @@ def list_process(message):
 		elif 'phone' in command:
 			rtn_msg = list_show(remind_list, option='normal_phone')
 			cmd_cnl = False
+		print(str(message.author) + ' used /list')	
 	elif '/reschedule' in command:
 		command_list = command.split()[1:]
+		cmd_cnl = False
 		if len(command_list) >= 3:
 			# 引数が多すぎた場合、その旨を変数(rtn_msg)に格納
 			rtn_msg = random.choice(Too_many_elements)
