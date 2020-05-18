@@ -101,18 +101,19 @@ def left(digit, msg):
 			digit -= 2
 		else:
 			digit -= 2
-	msg = msg + ' '*digit
+	msg = msg + ' ' * digit
 	return msg
 
 # 二次元配列をそろえて表示するためのコマンド
 def list_show(remind_list, option = 'normal'):
 	remind_list_show = remind_list
 	if option == 'normal':
-		sndmsg = 'タスク一覧\n**締切**                                                    **タスク**                                                **科目名**                                                \n'
+		sndmsg = 'タスク一覧\n__**締切**                                                  | **タスク**                                              | **科目名**                                               |__\n'
 		for a in remind_list_show:
+			sndmsg = sndmsg + '__'
 			for i in a:
-				sndmsg = sndmsg + left(60, i)
-			sndmsg = sndmsg + '\n'
+				sndmsg = sndmsg + left(59, i) + '|'
+			sndmsg = sndmsg + '__\n'
 		return sndmsg
 
 # ↓コマンドの解釈をする関数。
