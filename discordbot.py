@@ -272,6 +272,7 @@ async def on_ready():
 @client.event
 async def on_message(message):
 	global remind_list
+	global change
 	try:
 		# メッセージ送信者がBotだった場合は無視する
 		if message.author.bot:
