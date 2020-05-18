@@ -252,7 +252,11 @@ async def on_message(message):
 				await message.channel.send(rtn_msg)
 	except: # 何かエラーが起きたらその内容をbotlogチャンネルに送信
 		log_channel = client.get_channel(BOT_LOG_CHANNEL)
-		await log_channel.send(str(sys.exc_info()))
+		exc_type, exc_obj, exc_tb = sys.exc_info()
+		await log_channel.send('Error in line ' + str(os.path.split( exc_tb.tb_frame.f_code.co_filename )[ 1 ]))
+		await log_channel.send(str(sys.exc_info()[0]))
+		await log_channel.send(str(sys.exc_info()[1]))
+		await log_channel.send(str(sys.exc_info()[2]))
 
 # Botの起動とDiscordサーバーへの接続
 client.run(TOKEN)
