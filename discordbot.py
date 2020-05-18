@@ -96,11 +96,11 @@ def left(digit, msg):
 		if unicodedata.east_asian_width(c) in ('F', 'W', 'A'):
 			digit -= 4
 		elif unicodedata.east_asian_width(c) in ('Na'):
-			digit -= 1
+			digit -= 2
 		elif unicodedata.east_asian_width(c) in ('H'):
 			digit -= 2
 		else:
-			digit -= 1
+			digit -= 2
 	msg = msg + ' '*digit
 	return msg
 
@@ -108,7 +108,7 @@ def left(digit, msg):
 def list_show(remind_list, option = 'normal'):
 	remind_list_show = remind_list
 	if option == 'normal':
-		sndmsg = '締切                      タスク                  科目名                  \n'
+		sndmsg = 'タスク一覧\n締切                      タスク                  科目名                  \n'
 		for a in remind_list_show:
 			for i in a:
 				sndmsg = sndmsg + left(30, i)
