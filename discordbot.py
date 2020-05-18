@@ -241,7 +241,8 @@ async def on_message(message):
 			sndmsg = '\n'
 			if change: # 課題リストの変更があった場合、課題、イベント一覧チャンネルの表示を更新する
 				remind_list = remind_list.sort(key=lambda x: x[0])
-				sndmsg = list_show(remind_list)
+				print(remind_list)
+				sndmsg = list_show(remind_list, option='normal')
 				data_channel = client.get_channel(BOT_DATA_CHANNEL)
 				def is_me(m):
 					return m.author == client.user
