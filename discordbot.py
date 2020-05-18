@@ -46,7 +46,7 @@ Added = ['# を課題リストにぶっこんでやったぜ！',
 	 '気をつけろ！ # が課題リストにお出ましだ！']
 Removed = ['あばよ、#、お前の役目はもう終わりなんだ。',
 	   '達者でな、#、またどこかで会おうぜ！',
-	   'じゃあな #。Classiと共に葬り去ってやる'
+	   'じゃあな #。Classiと共に葬り去ってやる',
 	   '俺たちが再び画面を見たとき、#はもういなかった...',
 	   '# はこの世から抹殺された！',
 	   'お前はここにいるべきでないんだよ... #君?',
@@ -153,6 +153,7 @@ def list_process(message):
 					else:
 						# なにもおかしいところがなかったらリスト(remind_list)にタスクを追加
 						remind_list.append([deadline, task_name, subject])
+						print('remind_list: appended ' + str(deadline) + ' ' + str(task_name) + ' ' + str(subject) + ' by' + str(message.author))
 						task = str(task_name)
 						# タスクが追加された旨を変数(rtn_msg)に格納
 						rtn_msg = random.choice(Added)
@@ -184,7 +185,8 @@ def list_process(message):
 				counter = counter + 1
 			if detect:
 				# あった場合、削除し、削除したタスク名を変数(task)に代入
-				task = remind_list.pop(counter)[0]
+				task = remind_list.pop(counter)[1]
+				print('remind_list: removed ' + str(task) + ' by' str(message.author))
 				# タスクを削除した旨を変数(rtn_msg)に格納
 				rtn_msg = random.choice(Removed)
 				rtn_msg = hash_replace(task, rtn_msg)
@@ -217,12 +219,20 @@ data_channel = client.get_channel(BOT_DATA_CHANNEL)
 # 起動時に動作する処理
 @client.event
 async def on_ready():
+	global remind_list
 	log_channel = client.get_channel(BOT_LOG_CHANNEL)
 	data_channel = client.get_channel(BOT_DATA_CHANNEL)
 	# botlogに再起動した旨を送信
 	await log_channel.send(str(started_time) + '(JST) Bot restarted!')
 	# 自分のステータスを変更
 	await client.change_presence(activity=discord.Game(name='課題リマインディング'))
+	async for message in data_channel.history():
+		content = message.content
+		memory_list = content.split('\n')[1:]
+		for z in memory_list:
+			remind_list.append(z.split)
+	await log_channel.send('Imported the file\n' + str(*remind_list))
+	print(remind_list + '\n\nimport complete!')
 
 # メッセージ受信時に動作する処理
 @client.event
