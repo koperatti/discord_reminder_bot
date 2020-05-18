@@ -233,7 +233,7 @@ async def on_ready():
 		for z in memory_list:
 			remind_list.append(z.split)
 	await log_channel.send('Imported the data from 課題、イベント一覧!')
-	pprint(remind_list)
+	print(remind_list)
 	print('\n\nimport complete!')
 
 # メッセージ受信時に動作する処理
