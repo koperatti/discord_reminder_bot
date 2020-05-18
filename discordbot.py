@@ -231,7 +231,8 @@ async def on_ready():
 		content = message.content
 		memory_list = content.split('\n')[2:]
 		for z in memory_list:
-			remind_list.append(z.split)
+			splited = z.split()
+			remind_list.append(splited)
 	await log_channel.send('Imported the data from 課題、イベント一覧!')
 	print(remind_list)
 	print('\n\nimport complete!')
