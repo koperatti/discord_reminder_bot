@@ -6,6 +6,7 @@ import traceback
 import random
 from discord.ext import tasks
 import asyncio
+import unicodedata
 
 TOKEN = os.environ['DISCORD_BOT_TOKEN'] # discord botのトークン。Heroku上で環境変数として設定している。
 DIFF_JST_FROM_UTC = 9
@@ -83,17 +84,42 @@ def time_format_check(date):
 		else:
 			date = 'Format error'
 	return date
-
+# rtn_msgの中の'#'をタスク名に置き換える関数
 def hash_replace(task,strings):
 	idx = strings.find(r'#')
 	result = strings[:idx] + str(task) + strings[idx+1:]
 	return result
+
+# 文字列の長さをスペースで保管する関数
+def left(digit, msg):
+	for c in msg:
+		if unicodedata.east_asian_width(c) in ('F', 'W', 'A'):
+			digit -= 4
+		elif unicodedata.east_asian_width(c) in ('Na'):
+			digit -= 1
+		elif unicodedata.east_asian_width(c) in ('H'):
+			digit -= 2
+		else:
+			digit -= 1
+    return　msg + ' '*digit
+
+# 二次元配列をそろえて表示するためのコマンド
+def list_show(remind_list, option = 'normal'):
+	remind_list_show = remind_list
+	if option == 'normal':
+		sndmsg = '締切                      タスク                  科目名                  \n'
+		for a in remind_list_show:
+			for i in a:
+				sndmsg = sndmsg + left(30, i)
+			sndmsg = sndmsg + '\n'
+			return sndmsg
 
 # ↓コマンドの解釈をする関数。
 def list_process(message):
 	global remind_list
 	global task
 	global change
+	cmd_chl = True
 	change = False
 	rtn_msg = ''
 	log_msg = ''
@@ -111,7 +137,7 @@ def list_process(message):
 					counter = 0
 					detect = False
 					for i in remind_list:
-						if task_name == i[0]:
+						if task_name == i[1]:
 							detect = True
 							break
 						counter = counter + 1
@@ -125,7 +151,7 @@ def list_process(message):
 						rtn_msg = random.choice(Format_error_deadline)
 					else:
 						# なにもおかしいところがなかったらリスト(remind_list)にタスクを追加
-						remind_list.append([task_name, subject, deadline])
+						remind_list.append([deadline, task_name, subject])
 						task = str(task_name)
 						# タスクが追加された旨を変数(rtn_msg)に格納
 						rtn_msg = random.choice(Added)
@@ -151,7 +177,7 @@ def list_process(message):
 			detect = False
 			# 引数に該当するタスク名を課題リストから検索、あったら変数detectを真にし、場所を変数counterに代入
 			for i in remind_list:
-				if command_list[0] == i[0]:
+				if command_list[0] == i[1]:
 					detect = True
 					break
 				counter = counter + 1
@@ -172,10 +198,12 @@ def list_process(message):
 			# その他の場合、要素が多すぎる旨を変数(rtn_msg)に代入
 			rtn_msg = random.choice(Too_many_elements)
 	elif '/list' in command:
-		rtn_msg = 'まだ大木が開発中だよ。えっ?いつできるかって?それは分からないなぁ'
+		remind_list = remind_list.sort()
+		rtn_msg = list_show(remind_list)
+		cmd_cnl = False
 	elif '/reschedule' in command:
 		rtn_msg = 'まだそれを実行する必要があるほど機能がしっかりしてないだろ!開発を待つんだな!'
-	return rtn_msg
+	return rtn_msg cmd_chl
 
 # 接続に必要なオブジェクトを生成
 client = discord.Client()
@@ -203,25 +231,24 @@ async def on_message(message):
 		# メッセージ送信者がBotだった場合は無視する
 		if message.author.bot:
 			return
-		# メッセージがコマンド送信用チャンネルから送られているかの確認
-		if message.channel.id == BOT_COMMAND_CHANNEL:
-			# 先ほどのコマンドを解釈し、実行する関数にメッセージ内容を入れて実行し、返り値rtn_msgを得る
-			rtn_msg = list_process(message)
+		# 先ほどのコマンドを解釈し、実行する関数にメッセージ内容を入れて実行し、返り値rtn_msgを得る
+		rtn_msg, cmd_chl = list_process(message)
+		if cmd_chl:
 			command_channel = client.get_channel(BOT_COMMAND_CHANNEL)
 			if rtn_msg: # rtn_msgに何か書いていたらそれをコマンド送信用チャンネルに送信
 				await command_channel.send(rtn_msg)
 			sndmsg = '\n'
 			if change: # 課題リストの変更があった場合、課題、イベント一覧チャンネルの表示を更新する
-				for a in remind_list:
-					for i in a:
-						sndmsg = sndmsg + '   ' + str(i)
-					sndmsg = sndmsg + '\n'
-				remind_list_old = remind_list
+				remind_list = remind_list.sort()
+				sndmsg = list_show(remind_list)
 				data_channel = client.get_channel(BOT_DATA_CHANNEL)
 				def is_me(m):
 					return m.author == client.user
 				await data_channel.purge(limit=100, check=is_me)
 				await data_channel.send(sndmsg)
+		else:
+			if rtn_msg:
+				await message.channel.send(rtn_msg)
 	except: # 何かエラーが起きたらその内容をbotlogチャンネルに送信
 		log_channel = client.get_channel(BOT_LOG_CHANNEL)
 		await log_channel.send(str(sys.exc_info()))
