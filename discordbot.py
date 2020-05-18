@@ -7,6 +7,7 @@ import random
 from discord.ext import tasks
 import asyncio
 import unicodedata
+import pprint
 
 TOKEN = os.environ['DISCORD_BOT_TOKEN'] # discord botのトークン。Heroku上で環境変数として設定している。
 DIFF_JST_FROM_UTC = 9
@@ -231,8 +232,9 @@ async def on_ready():
 		memory_list = content.split('\n')[1:]
 		for z in memory_list:
 			remind_list.append(z.split)
-	await log_channel.send('Imported the file\n' + str(*remind_list))
-	print(remind_list + '\n\nimport complete!')
+	await log_channel.send('Imported the data from 課題、イベント一覧!')
+	pprint(remind_list)
+	print('\n\nimport complete!')
 
 # メッセージ受信時に動作する処理
 @client.event
