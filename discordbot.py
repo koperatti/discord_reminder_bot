@@ -101,7 +101,8 @@ def left(digit, msg):
 			digit -= 2
 		else:
 			digit -= 1
-    return　msg + ' '*digit
+	msg = msg + ' '*digit
+	return　msg
 
 # 二次元配列をそろえて表示するためのコマンド
 def list_show(remind_list, option = 'normal'):
