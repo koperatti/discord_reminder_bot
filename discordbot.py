@@ -108,12 +108,11 @@ def left(digit, msg):
 def list_show(remind_list, option = 'normal'):
 	remind_list_show = remind_list
 	if option == 'normal':
-		sndmsg = 'タスク一覧\n__**締切**                                                  | **タスク**                                              | **科目名**                                               |__\n'
+		sndmsg = 'タスク一覧\n__**締切**                                                    **タスク**                                                **科目名**                                                __\n'
 		for a in remind_list_show:
-			sndmsg = sndmsg + '__'
 			for i in a:
-				sndmsg = sndmsg + left(59, i) + '|'
-			sndmsg = sndmsg + '__\n'
+				sndmsg = sndmsg + left(60, i)
+			sndmsg = sndmsg + '\n'
 		return sndmsg
 
 # ↓コマンドの解釈をする関数。
