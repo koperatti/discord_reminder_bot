@@ -110,12 +110,12 @@ def left(digit, msg):
 def list_show(remind_list, option = 'normal'):
 	remind_list_show = remind_list
 	if option == 'normal':
-		sndmsg = 'タスク一覧\n__**締切**                      **タスク**                                                                                        **科目名**                  __\n'
+		sndmsg = 'タスク一覧\n__**締切**                      **タスク**                                                                    **科目名**                  __\n'
 		for a in remind_list_show:
-			i = a[0}
+			i = a[0]
 			sndmsg = sndmsg + left(30, i)
 			i = a[1]
-			sndmsg = sndmsg + left(100, i)
+			sndmsg = sndmsg + left(80, i)
 			i = a[2]
 			sndmsg = sndmsg + left(30, i)
 			sndmsg = sndmsg + '\n'
