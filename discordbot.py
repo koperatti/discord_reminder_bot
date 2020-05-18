@@ -124,7 +124,7 @@ def list_show(remind_list, option = 'normal'):
 		for a in remind_list_show:
 			sndmsg = sndmsg + '\n'
 			for i in a:
-				sndmsg = sndmsg + str(a) + '\n'
+				sndmsg = sndmsg + str(i) + '\n'
 	return sndmsg
 
 # ↓コマンドの解釈をする関数。
