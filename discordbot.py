@@ -59,6 +59,7 @@ Not_found = ['404エラー！この意味が分かるかな? #がいないって
 Same_name = [#ならもうここにおるぞ！さては偽物だな！',
 	     'どうやらあなたは課題リストをよく見ていないようだねぇ、#はとっくに登録済みだよ',
 	     'あれぇ?#?聴き覚えのある名前だなぁ']
+Rescheduled = ['ガチャコン！ #の締め切りが変わった！']
 
 # ↓時刻の整形をする関数。入れられた値(18-5-6_3:15等)を整形(2018-05-06_03:15等)する
 def time_format_check(date):
@@ -109,10 +110,14 @@ def left(digit, msg):
 def list_show(remind_list, option = 'normal'):
 	remind_list_show = remind_list
 	if option == 'normal':
-		sndmsg = 'タスク一覧\n__**締切**                                                    **タスク**                                                **科目名**                                                __\n'
+		sndmsg = 'タスク一覧\n__**締切**                      **タスク**                                                                                        **科目名**                  __\n'
 		for a in remind_list_show:
-			for i in a:
-				sndmsg = sndmsg + left(60, i)
+			i = a[0}
+			sndmsg = sndmsg + left(30, i)
+			i = a[1]
+			sndmsg = sndmsg + left(100, i)
+			i = a[2]
+			sndmsg = sndmsg + left(30, i)
 			sndmsg = sndmsg + '\n'
 		return sndmsg
 
@@ -154,7 +159,7 @@ def list_process(message):
 					else:
 						# なにもおかしいところがなかったらリスト(remind_list)にタスクを追加
 						remind_list.append([deadline, task_name, subject])
-						print('remind_list: appended ' + str(deadline) + ' ' + str(task_name) + ' ' + str(subject) + ' by' + str(message.author))
+						print(str(message.author) + 'add ' + str(deadline) + ' ' + str(task_name) + ' ' + str(subject))
 						task = str(task_name)
 						# タスクが追加された旨を変数(rtn_msg)に格納
 						rtn_msg = random.choice(Added)
@@ -187,7 +192,7 @@ def list_process(message):
 			if detect:
 				# あった場合、削除し、削除したタスク名を変数(task)に代入
 				task = remind_list.pop(counter)[1]
-				print('remind_list: removed ' + str(task) + ' by' + str(message.author))
+				print(str(message.author) + 'removed the ' + str(task))
 				# タスクを削除した旨を変数(rtn_msg)に格納
 				rtn_msg = random.choice(Removed)
 				rtn_msg = hash_replace(task, rtn_msg)
@@ -206,7 +211,33 @@ def list_process(message):
 		rtn_msg = list_show(remind_list)
 		cmd_cnl = False
 	elif '/reschedule' in command:
-		rtn_msg = 'まだそれを実行する必要があるほど機能がしっかりしてないだろ!開発を待つんだな!'
+		command_list = command.split()[1:]
+		if len(command_list) >= 3:
+			# 引数が多すぎた場合、その旨を変数(rtn_msg)に格納
+			rtn_msg = random.choice(Too_many_elements)
+		elif len(command_list) <= 1:
+			# 引数が足りない場合、その旨を変数(rtn_msg)に格納
+			rtn_msg = random.choice(Element_missed)
+		else:
+			counter = 0
+			detect = False
+			# 引数に該当するタスク名を課題リストから検索、あったら変数detectを真にし、場所を変数counterに代入
+			for i in remind_list:
+				if command_list[0] == i[1]:
+					detect = True
+					break
+				counter = counter + 1
+			if detect:
+				new_schedule = time_format_check(command_list[2])
+				if deadline == 'Format error':
+					rtn_msg = random.choice(Format_error_deadline)
+				else:
+					remind_list[counter][0] = new_schedule
+					task = remind_list[counter][1]
+					rtn_msg = random.choice(Rescheduled)
+					rtn_msg = hash_replace(task, rtn_msg)
+					print(str(message.author) + ' rescheduled ' + str(task))
+					change = True
 	return rtn_msg, cmd_cnl
 
 # 接続に必要なオブジェクトを生成
@@ -259,6 +290,7 @@ async def on_message(message):
 					return m.author == client.user
 				await data_channel.purge(limit=100, check=is_me)
 				await data_channel.send(sndmsg)
+				change = False
 		else:
 			if rtn_msg:
 				await message.channel.send(rtn_msg)
