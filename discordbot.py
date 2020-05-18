@@ -199,7 +199,7 @@ def list_process(message):
 			# その他の場合、要素が多すぎる旨を変数(rtn_msg)に代入
 			rtn_msg = random.choice(Too_many_elements)
 	elif '/list' in command:
-		remind_list = remind_list.sorted(key=lambda x: x[0])
+		remind_list = sorted(remind_list)
 		rtn_msg = list_show(remind_list)
 		cmd_cnl = False
 	elif '/reschedule' in command:
@@ -239,7 +239,7 @@ async def on_message(message):
 			if rtn_msg: # rtn_msgに何か書いていたらそれをコマンド送信用チャンネルに送信
 				await command_channel.send(rtn_msg)
 			if change: # 課題リストの変更があった場合、課題、イベント一覧チャンネルの表示を更新する
-				remind_list = remind_list.sorted(key=lambda x: x[0])
+				remind_list = sorted(remind_list)
 				sndmsg = list_show(remind_list, option='normal')
 				data_channel = client.get_channel(BOT_DATA_CHANNEL)
 				def is_me(m):
