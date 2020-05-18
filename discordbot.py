@@ -186,7 +186,7 @@ def list_process(message):
 			if detect:
 				# あった場合、削除し、削除したタスク名を変数(task)に代入
 				task = remind_list.pop(counter)[1]
-				print('remind_list: removed ' + str(task) + ' by' str(message.author))
+				print('remind_list: removed ' + str(task) + ' by' + str(message.author))
 				# タスクを削除した旨を変数(rtn_msg)に格納
 				rtn_msg = random.choice(Removed)
 				rtn_msg = hash_replace(task, rtn_msg)
