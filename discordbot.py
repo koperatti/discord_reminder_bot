@@ -153,6 +153,7 @@ def list_process(message):
 					else:
 						# なにもおかしいところがなかったらリスト(remind_list)にタスクを追加
 						remind_list.append([deadline, task_name, subject])
+						print(remind_list)	
 						task = str(task_name)
 						# タスクが追加された旨を変数(rtn_msg)に格納
 						rtn_msg = random.choice(Added)
