@@ -153,7 +153,6 @@ def list_process(message):
 					else:
 						# なにもおかしいところがなかったらリスト(remind_list)にタスクを追加
 						remind_list.append([deadline, task_name, subject])
-						print(remind_list)	
 						task = str(task_name)
 						# タスクが追加された旨を変数(rtn_msg)に格納
 						rtn_msg = random.choice(Added)
@@ -239,11 +238,10 @@ async def on_message(message):
 			command_channel = client.get_channel(BOT_COMMAND_CHANNEL)
 			if rtn_msg: # rtn_msgに何か書いていたらそれをコマンド送信用チャンネルに送信
 				await command_channel.send(rtn_msg)
-			sndmsg = '\n'
 			if change: # 課題リストの変更があった場合、課題、イベント一覧チャンネルの表示を更新する
-				remind_list = remind_list.sort(key=lambda x: x[0])
-				print(remind_list)
-				sndmsg = list_show(remind_list, option='normal')
+				remind_list_show = remind_list.sort(key=lambda x: x[0])
+				print(remind_list_show)
+				sndmsg = list_show(remind_list_show, option='normal')
 				data_channel = client.get_channel(BOT_DATA_CHANNEL)
 				def is_me(m):
 					return m.author == client.user
