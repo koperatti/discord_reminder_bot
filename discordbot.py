@@ -229,7 +229,7 @@ async def on_ready():
 	await client.change_presence(activity=discord.Game(name='課題リマインディング'))
 	async for message in data_channel.history():
 		content = message.content
-		memory_list = content.split('\n')[1:]
+		memory_list = content.split('\n')[2:]
 		for z in memory_list:
 			remind_list.append(z.split)
 	await log_channel.send('Imported the data from 課題、イベント一覧!')
