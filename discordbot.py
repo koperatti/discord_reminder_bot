@@ -120,7 +120,7 @@ def list_process(message):
 	global remind_list
 	global task
 	global change
-	cmd_chl = True
+	cmd_cnl = True
 	change = False
 	rtn_msg = ''
 	log_msg = ''
@@ -204,7 +204,7 @@ def list_process(message):
 		cmd_cnl = False
 	elif '/reschedule' in command:
 		rtn_msg = 'まだそれを実行する必要があるほど機能がしっかりしてないだろ!開発を待つんだな!'
-	return rtn_msg cmd_chl
+	return rtn_msg cmd_cnl
 
 # 接続に必要なオブジェクトを生成
 client = discord.Client()
