@@ -258,7 +258,7 @@ def list_process(message, on_cmd_cnl):
 		else:
 			rtn_msg = random.choice(Wrong_channel)
 	elif '/remove' in command: # /remove がメッセージ内に入っているかの判別
-		cmd_cnl = True
+		cmd_chl = True
 		if on_cmd_cnl:
 			command_list = command.split()[1:] # コマンドをスペースで区切り、/removeだけ消す(例：/remove task → task)
 			if len(command_list) == 1: # コマンドが正しい形かどうか判別
@@ -288,13 +288,13 @@ def list_process(message, on_cmd_cnl):
 				# その他の場合、要素が多すぎる旨を変数(rtn_msg)に代入
 				rtn_msg = random.choice(Too_many_elements)
 		else:
-			cmd_cnl = False
+			cmd_chl = False
 			rtn_msg = random.choice(Wrong_channel)
 	elif '/list' in command:
 		global day_later
 		command_list = command.split()[1:]
 		option = []
-		cmd_cnl = False
+		cmd_chl = False
 		if command_list:
 			if 'phone' in command_list:
 				option.append('phone')
@@ -320,7 +320,7 @@ def list_process(message, on_cmd_cnl):
 
 		print(str(message.author) + ' used /list')	
 	elif '/reschedule' in command:
-		cmd_cnl = False
+		cmd_chl = False
 		if on_cmd_cnl:
 			command_list = command.split()[1:]
 			if len(command_list) >= 3:
@@ -348,12 +348,12 @@ def list_process(message, on_cmd_cnl):
 						rtn_msg = random.choice(Rescheduled)
 						rtn_msg = hash_replace(task, rtn_msg)
 						print(str(message.author) + ' rescheduled ' + str(task))
-						cmd_cnl = True
+						cmd_chl = True
 						change = True
 		else:
-			cmd_cnl = False
+			cmd_chl = False
 			rtn_msg = random.choice(Wrong_channel)
-	return rtn_msg, cmd_cnl
+	return rtn_msg, cmd_chl
 
 # 接続に必要なオブジェクトを生成
 client = discord.Client()
