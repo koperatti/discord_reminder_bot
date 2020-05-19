@@ -16,6 +16,7 @@ BOT_LOG_CHANNEL = 710813437675962449 # BotlogチャンネルのID
 BOT_COMMAND_CHANNEL = 710335701459271799 # コマンド送信用チャンネルのID
 BOT_DATA_CHANNEL = 710752335781036073 # 課題、イベント一覧チャンネルのID
 remind_list = []
+day_later = 0
 change = False
 task = ''
 # 以下のリストたちはbotのランダムな返信リスト。 #の部分がタスク名に置き換わる(No_hashだけはそのまま)
@@ -63,15 +64,19 @@ Rescheduled = ['ガチャコン！ #の締め切りが変わった！']
 
 # ↓時刻の整形をする関数。入れられた値(18-5-6_3:15等)を整形(2018-05-06_03:15等)する
 def time_format_check(date):
-	hifun_count = date.count('-')
+	slash_count = date.count('/')
 	coron_count = date.count(':')
-	if not hifun_count == 2:
+	if slash_count <= 0:
+		date = 'Format error'
+	elif slash_count >= 3:
 		date = 'Format error'
 	else:
-		if date[2] == '-':
+		if slash_count == 1:
+			date = '2020/' + date
+		elif date[2] == '/':
 			date = '20' + date
-		if date[4] == '-':
-			if date[6] == '-':
+		if date[4] == '/':
+			if date[6] == '/':
 				date = date[:5] + '0' + date[5:]
 			if len(date) == 10:
 				pass
@@ -83,6 +88,32 @@ def time_format_check(date):
 					date = date[:11] + '0' + date[11:]
 				if len(date) == 15:
 					date = date[:14] + '0' + date[14:]
+			if len(date) == 16 or len(date) == 10:
+				try:
+					month = int(date[5:7])
+					day = int(date[8:10])
+					if month <= 0:
+						date = 'Format error'
+					elif month >= 13:
+						date = 'Format error'
+					elif day <= 0:
+						date = 'Format error'
+					elif day >= 31:
+						date = 'Format error'
+					else:
+						pass
+					if len(date) == 16:
+						year = int(date[0:4])
+						if year <= 0:
+							date = 'Format error'
+						if year >= 2024:
+							date = 'Format error'
+						else:
+							pass
+				except:
+					date = 'Format error'
+			else:
+				date = 'Format error'
 		else:
 			date = 'Format error'
 	return date
@@ -107,9 +138,36 @@ def left(digit, msg):
 	return msg
 
 # 二次元配列をそろえて表示するためのコマンド
-def list_show(remind_list, option = 'normal'):
-	remind_list_show = remind_list
-	if option == 'normal':
+def list_show(remind_list, option = ['normal']):
+	remind_list_show = sorted(remind_list)
+	if 'in' in option:
+		dt_today = datetime.datetime.today()
+		search_date = dt_today + timedelta(days=day_later, hours=DIFF_JST_FROM_UTC)
+		search_date = datetime.strftime(search_date, '%Y/%m/%d'))
+		counter = 0
+		detect = False
+		for i in remind_list:
+			Day = i[0]
+			if not detect:
+				if int(search_date[:4]) > int(Day[:4]):
+					pass
+				elif int(search_date[:4]) == int(Day[:4]):
+					if int(search_date[6:8]) > int(Day[6:8]):
+						pass
+					elif int(search_date[6:8]) == int(Day[6:8]):
+						if int(search_date[9:11]) >= int(Day[9:11]):
+							pass
+						else:
+							detect = True
+					else:
+						detect = True
+				else:
+					detect = True
+				counter = counter + 1
+			else:
+				break
+		remind_list_show = remind_list[:counter]
+	if 'normal' in option:
 		sndmsg = 'タスク一覧\n__**締切**                              **タスク**                                                               **科目名**                  __\n'
 		for a in remind_list_show:
 			i = a[0]
@@ -119,12 +177,13 @@ def list_show(remind_list, option = 'normal'):
 			i = a[2]
 			sndmsg = sndmsg + left(30, i)
 			sndmsg = sndmsg + '\n'
-	elif option == 'normal_phone':
+	elif 'phone' in option:
 		sndmsg = '**タスク一覧**\n'
 		for a in remind_list_show:
 			sndmsg = sndmsg + '\n'
-			for i in a:
-				sndmsg = sndmsg + str(i) + '\n'
+			sndmsg = sndmsg + str(a[]0) + '\n'
+			sndmsg = sndmsg + str(a[]1) + ' ('
+			sndmsg = sndmsg + str(a[]2) + ')\n'
 	return sndmsg
 
 # ↓コマンドの解釈をする関数。
@@ -132,6 +191,7 @@ def list_process(message):
 	global remind_list
 	global task
 	global change
+	global day_later
 	cmd_cnl = True
 	change = False
 	rtn_msg = ''
@@ -213,14 +273,32 @@ def list_process(message):
 			# その他の場合、要素が多すぎる旨を変数(rtn_msg)に代入
 			rtn_msg = random.choice(Too_many_elements)
 	elif '/list' in command:
+		global cmd_cnl
+		global day_later
 		command_list = command.split()[1:]
-		if not command_list:
-			remind_list = sorted(remind_list)
+		option = []
+		cmd_cnl = False
+		if command_list:
+			if 'phone' in command:
+				option.append('phone')
+			if 'in_today' in command:
+				day_later = 0
+				option.append('in')
+			elif 'in_tommorow' in command:
+				day_later = 1
+				option.append('in')
+			elif 'in' in command:
+				try:
+					day_later = int(command[command.index('in') + 1])
+					option.append('in')
+				except:
+					day_later = 'Error'
+					rtn_msg = random.choice(Element_missed)
+			if not day_later == 'Error':
+				rtn_msg = list_show(remind_list, option)
+		else:
 			rtn_msg = list_show(remind_list)
-			cmd_cnl = False
-		elif 'phone' in command:
-			rtn_msg = list_show(remind_list, option='normal_phone')
-			cmd_cnl = False
+
 		print(str(message.author) + ' used /list')	
 	elif '/reschedule' in command:
 		command_list = command.split()[1:]
@@ -241,7 +319,7 @@ def list_process(message):
 					break
 				counter = counter + 1
 			if detect:
-				new_schedule = time_format_check(command_list[2])
+				new_schedule = time_format_check(command_list[1])
 				if deadline == 'Format error':
 					rtn_msg = random.choice(Format_error_deadline)
 				else:
