@@ -293,41 +293,41 @@ def list_process(message, on_cmd_cnl):
 		else:
 			cmd_chl = False
 			rtn_msg = random.choice(Wrong_channel)
-		elif '/rename' in command: # /remove がメッセージ内に入っているかの判別
-		cmd_chl = True
-		if on_cmd_cnl:
-			command_list = command.split()[1:] # コマンドをスペースで区切り、/removeだけ消す(例：/remove task → task)
-			if len(command_list) == 2: # コマンドが正しい形かどうか判別
-				counter = 0
-				detect = False
-				# 引数に該当するタスク名を課題リストから検索、あったら変数detectを真にし、場所を変数counterに代入
-				for i in remind_list:
-					if command_list[0] == i[1]:
-						detect = True
-						break
-					counter = counter + 1
-				if detect:
-					# あった場合、改名し、改名したタスク名を変数(task)に代入
-					task = remind_list[counter][1]
-					remind_list[counter][1] = command_list[1]
-					print(str(message.author) + ' renamed ' + str(task) + ' to ' + str(command_list[1]))
-					# タスクを削除した旨を変数(rtn_msg)に格納
-					rtn_msg = random.choice(Renamed)
-					task = str(task) + ' が ' + str(command_list)
-					rtn_msg = hash_replace(task, rtn_msg)
-					# リストが変更されたことを示すために変数(change)を真にする
-					change = True
-				else:
-					# なかった場合、見つからなかった旨を変数(rtn_msg)に格納
-					task = str(command_list[0])
-					rtn_msg = random.choice(Not_found)
-					rtn_msg = hash_replace(task, rtn_msg)
+	elif '/rename' in command: # /remove がメッセージ内に入っているかの判別
+	cmd_chl = True
+	if on_cmd_cnl:
+		command_list = command.split()[1:] # コマンドをスペースで区切り、/removeだけ消す(例：/remove task → task)
+		if len(command_list) == 2: # コマンドが正しい形かどうか判別
+			counter = 0
+			detect = False
+			# 引数に該当するタスク名を課題リストから検索、あったら変数detectを真にし、場所を変数counterに代入
+			for i in remind_list:
+				if command_list[0] == i[1]:
+					detect = True
+					break
+				counter = counter + 1
+			if detect:
+				# あった場合、改名し、改名したタスク名を変数(task)に代入
+				task = remind_list[counter][1]
+				remind_list[counter][1] = command_list[1]
+				print(str(message.author) + ' renamed ' + str(task) + ' to ' + str(command_list[1]))
+				# タスクを削除した旨を変数(rtn_msg)に格納
+				rtn_msg = random.choice(Renamed)
+				task = str(task) + ' が ' + str(command_list)
+				rtn_msg = hash_replace(task, rtn_msg)
+				# リストが変更されたことを示すために変数(change)を真にする
+				change = True
 			else:
-				# その他の場合、要素が多すぎる旨を変数(rtn_msg)に代入
-				rtn_msg = random.choice(Too_many_elements)
+				# なかった場合、見つからなかった旨を変数(rtn_msg)に格納
+				task = str(command_list[0])
+				rtn_msg = random.choice(Not_found)
+				rtn_msg = hash_replace(task, rtn_msg)
 		else:
-			cmd_chl = False
-			rtn_msg = random.choice(Wrong_channel)
+			# その他の場合、要素が多すぎる旨を変数(rtn_msg)に代入
+			rtn_msg = random.choice(Too_many_elements)
+	else:
+		cmd_chl = False
+		rtn_msg = random.choice(Wrong_channel)
 	elif '/list' in command:
 		global day_later
 		command_list = command.split()[1:]
