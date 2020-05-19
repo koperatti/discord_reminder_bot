@@ -158,10 +158,10 @@ def list_show(remind_list, option = ['normal']):
 				if int(search_date[:4]) > int(Day[:4]):
 					pass
 				elif int(search_date[:4]) == int(Day[:4]):
-					if int(search_date[6:8]) > int(Day[6:8]):
+					if int(search_date[5:7]) > int(Day[5:7]):
 						pass
-					elif int(search_date[6:8]) == int(Day[6:8]):
-						if int(search_date[9:11]) >= int(Day[9:11]):
+					elif int(search_date[5:7]) == int(Day[5:7]):
+						if int(search_date[8:10]) >= int(Day[9:11]):
 							pass
 						else:
 							detect = True
@@ -376,7 +376,7 @@ async def on_ready():
 			remind_list.append(splited)
 	await log_channel.send('Imported the data from 課題、イベント一覧!')
 	print(remind_list)
-	print('\n\nimport complete!')
+	print('import complete!')
 
 # メッセージ受信時に動作する処理
 @client.event
