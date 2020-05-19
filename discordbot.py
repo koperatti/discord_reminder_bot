@@ -402,7 +402,7 @@ async def on_message(message):
 				data_channel = client.get_channel(BOT_DATA_CHANNEL)
 				def is_me(m):
 					return m.author == client.user
-				await data_channel.purge(limit=100, check=is_me)
+				await data_channel.purge(limit=100)
 				await data_channel.send(sndmsg)
 				await command_channel.send(rtn_msg)
 				await asyncio.sleep(5)
