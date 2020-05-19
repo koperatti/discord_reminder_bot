@@ -158,13 +158,13 @@ def list_show(remind_list, option = ['normal']):
 			Day = i[0]
 			if not detect:
 				if int(search_date[:4]) > int(Day[:4]):
-					continue
+					pass
 				elif int(search_date[:4]) == int(Day[:4]):
 					if int(search_date[5:7]) > int(Day[5:7]):
-						continue
+						pass
 					elif int(search_date[5:7]) == int(Day[5:7]):
 						if int(search_date[8:10]) >= int(Day[8:10]):
-							continue
+							pass
 						else:
 							detect = True
 					else:
@@ -172,6 +172,7 @@ def list_show(remind_list, option = ['normal']):
 				else:
 					detect = True
 				counter = counter + 1
+				print('I am alive')
 			else:
 				break
 		remind_list_show = remind_list[:counter]
