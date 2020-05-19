@@ -18,7 +18,7 @@ BOT_DATA_CHANNEL = 710752335781036073 # 課題、イベント一覧チャンネ�
 remind_list = []
 day_later = 0
 on_cmd_cnl = False
-cmd_cnl = True
+cmd_chl = True
 change = False
 task = ''
 # 以下のリストたちはbotのランダムな返信リスト。 #の部分がタスク名に置き換わる(No_hashだけはそのまま)
@@ -259,6 +259,7 @@ def list_process(message, on_cmd_cnl):
 				# *が使われている場合、その旨を変数(rtn_msg)に格納
 				rtn_msg = random.choice(No_astarisk)
 		else:
+			cmd_chl = False
 			rtn_msg = random.choice(Wrong_channel)
 	elif '/remove' in command: # /remove がメッセージ内に入っているかの判別
 		cmd_chl = True
