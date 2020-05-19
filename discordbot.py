@@ -145,6 +145,7 @@ def left(digit, msg):
 
 # 二次元配列をそろえて表示するためのコマンド
 def list_show(remind_list, option = ['normal']):
+	global day_later
 	sndmsg = ''
 	remind_list_show = sorted(remind_list)
 	if 'in' in option:
@@ -310,7 +311,7 @@ def list_process(message, on_cmd_cnl):
 					day_later = 'Error'
 					rtn_msg = random.choice(Element_missed)
 			if not day_later == 'Error':
-				rtn_msg = list_show(remind_list, option)
+				rtn_msg = list_show(remind_list, option=option)
 		else:
 			rtn_msg = list_show(remind_list)
 
@@ -336,7 +337,7 @@ def list_process(message, on_cmd_cnl):
 					counter = counter + 1
 				if detect:
 					new_schedule = time_format_check(command_list[1])
-					if deadline == 'Format error':
+					if new_schedule == 'Format error':
 						rtn_msg = random.choice(Format_error_deadline)
 					else:
 						remind_list[counter][0] = new_schedule
