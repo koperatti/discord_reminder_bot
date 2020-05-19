@@ -293,17 +293,17 @@ def list_process(message, on_cmd_cnl):
 		option = []
 		cmd_cnl = False
 		if command_list:
-			if 'phone' in command:
+			if 'phone' in command_list:
 				option.append('phone')
-			if 'in_today' in command:
+			if 'in_today' in command_list:
 				day_later = 0
 				option.append('in')
-			elif 'in_tommorow' in command:
+			elif 'in_tommorow' in command_list:
 				day_later = 1
 				option.append('in')
-			elif 'in' in command:
+			elif 'in' in command_list:
 				try:
-					day_later = int(command[command.index('in') + 1])
+					day_later = int(command_list[command_list.index('in') + 1])
 					option.append('in')
 				except:
 					day_later = 'Error'
