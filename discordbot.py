@@ -148,7 +148,7 @@ def list_show(remind_list, option = ['normal']):
 	remind_list_show = sorted(remind_list)
 	if 'in' in option:
 		dt_today = datetime.datetime.today()
-		search_date = dt_today + timedelta(days=day_later, hours=DIFF_JST_FROM_UTC)
+		search_date = dt_today + datetime.timedelta(days=day_later, hours=DIFF_JST_FROM_UTC)
 		search_date = datetime.strftime(search_date, '%Y/%m/%d')
 		counter = 0
 		detect = False
