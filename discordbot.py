@@ -18,6 +18,7 @@ BOT_DATA_CHANNEL = 710752335781036073 # 課題、イベント一覧チャンネ�
 remind_list = []
 day_later = 0
 on_cmd_cnl = False
+cmd_cnl = True
 change = False
 task = ''
 # 以下のリストたちはbotのランダムな返信リスト。 #の部分がタスク名に置き換わる(No_hashだけはそのまま)
