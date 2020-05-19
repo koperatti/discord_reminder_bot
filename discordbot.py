@@ -197,6 +197,7 @@ def list_process(message, on_cmd_cnl):
 	global task
 	global change
 	global day_later
+	global cmd_cnl
 	cmd_cnl = True
 	change = False
 	rtn_msg = ''
@@ -286,7 +287,6 @@ def list_process(message, on_cmd_cnl):
 			cmd_cnl = False
 			rtn_msg = random.choice(Wrong_channel)
 	elif '/list' in command:
-		global cmd_cnl
 		global day_later
 		command_list = command.split()[1:]
 		option = []
