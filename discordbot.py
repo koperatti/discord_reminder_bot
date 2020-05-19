@@ -147,6 +147,7 @@ def left(digit, msg):
 def list_show(remind_list, option = ['normal']):
 	global day_later
 	sndmsg = ''
+	remind_list = sorted(remind_list)
 	remind_list_show = sorted(remind_list)
 	if 'in' in option:
 		dt_today = datetime.datetime.today()
@@ -172,10 +173,9 @@ def list_show(remind_list, option = ['normal']):
 				else:
 					detect = True
 				counter = counter + 1
-				print('I am alive')
 			else:
 				break
-		remind_list_show = remind_list[:counter]
+		remind_list_show = remind_list[:counter - 1]
 	if 'normal' in option:
 		sndmsg = 'タスク一覧\n__**締切**                              **タスク**                                                               **科目名**                  __\n'
 		for a in remind_list_show:
@@ -298,6 +298,8 @@ def list_process(message, on_cmd_cnl):
 		if command_list:
 			if 'phone' in command_list:
 				option.append('phone')
+			else:
+				option.append('normal')
 			if 'in_today' in command_list:
 				day_later = 0
 				option.append('in')
