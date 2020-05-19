@@ -145,6 +145,7 @@ def left(digit, msg):
 
 # 二次元配列をそろえて表示するためのコマンド
 def list_show(remind_list, option = ['normal']):
+	global sndmsg
 	remind_list_show = sorted(remind_list)
 	if 'in' in option:
 		dt_today = datetime.datetime.today()
