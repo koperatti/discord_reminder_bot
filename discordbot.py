@@ -158,13 +158,13 @@ def list_show(remind_list, option = ['normal']):
 			Day = i[0]
 			if not detect:
 				if int(search_date[:4]) > int(Day[:4]):
-					pass
+					continue
 				elif int(search_date[:4]) == int(Day[:4]):
 					if int(search_date[5:7]) > int(Day[5:7]):
-						pass
+						continue
 					elif int(search_date[5:7]) == int(Day[5:7]):
 						if int(search_date[8:10]) >= int(Day[8:10]):
-							pass
+							continue
 						else:
 							detect = True
 					else:
