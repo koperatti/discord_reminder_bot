@@ -67,8 +67,8 @@ Rescheduled = ['ガチャコン！ #の締め切りが変わった！']
 Wrong_channel = ['そのチャンネルからは俺にその命令を下せないぜ！',
 	         'その命令はここでは実行できないぜ！課題、イベント一覧に来るんだな！',
 	         'そのチャンネルからはそのコマンドは実行できないぜ！']
-Renamed = ['ガチャコン！ # に置き換わった！'
-	   '# に生まれ変わった！'
+Renamed = ['ガチャコン！ # に置き換わった！',
+	   '# に生まれ変わった！',
 	   '# に転生した！']
 
 # ↓時刻の整形をする関数。入れられた値(18-5-6_3:15等)を整形(2018-05-06_03:15等)する
@@ -308,16 +308,28 @@ def list_process(message, on_cmd_cnl):
 						break
 					counter = counter + 1
 				if detect:
-					# あった場合、改名し、改名したタスク名を変数(task)に代入
-					task = remind_list[counter][1]
-					remind_list[counter][1] = command_list[1]
-					print(str(message.author) + ' renamed ' + str(task) + ' to ' + str(command_list[1]))
-					# タスクを削除した旨を変数(rtn_msg)に格納
-					rtn_msg = random.choice(Renamed)
-					task = str(task) + ' が ' + str(command_list)
-					rtn_msg = hash_replace(task, rtn_msg)
-					# リストが変更されたことを示すために変数(change)を真にする
-					change = True
+					counter_2 = 0
+					double = False
+					for i in remind_list:
+						if command_list[1] == i[1]:
+							double = True
+							break
+						counter = counter + 1
+					if not double:
+						# あった場合、改名し、改名したタスク名を変数(task)に代入
+						task = remind_list[counter][1]
+						remind_list[counter][1] = command_list[1]
+						print(str(message.author) + ' renamed ' + str(task) + ' to ' + str(command_list[1]))
+						# タスクを削除した旨を変数(rtn_msg)に格納
+						rtn_msg = random.choice(Renamed)
+						task = str(task) + ' が ' + str(command_list)
+						rtn_msg = hash_replace(task, rtn_msg)
+						# リストが変更されたことを示すために変数(change)を真にする
+						change = True
+					else:
+						task = command_list[1]
+						rtn_msg = random.choice(Same_name)
+						rtn_msg = hash_replace(task, rtn_msg)
 				else:
 					# なかった場合、見つからなかった旨を変数(rtn_msg)に格納
 					task = str(command_list[0])
