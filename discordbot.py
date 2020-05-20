@@ -410,38 +410,39 @@ def list_process(message, on_cmd_cnl):
 async def minute_loop():
 	global change
 	global remind_list
-	dt_now = datetime.datetime.today()
-	search_day = dt_now + datetime.timedelta(hours=DIFF_JST_FROM_UTC)
-	search_day = search_day.strftime('%Y/%m/%d_')
-	counter_2 = 0
-	remind_list = sorted(remind_list)
-	loop_detect = False
-	for i in remind_list:
-		if not loop_detect:
-			Day = i[0]
-			if int(search_day[:4]) < int(Day[:4]):
-				loop_detect = True
-				break
-			elif int(search_day[:4]) > int(Day[:4]):
-				counter_2 = counter_2 + 1
-			else:
-				if int(search_day[5:7]) <= int(Day[5:7]):
+	while True:
+		dt_now = datetime.datetime.today()
+		search_day = dt_now + datetime.timedelta(hours=DIFF_JST_FROM_UTC)
+		search_day = search_day.strftime('%Y/%m/%d_')
+		counter_2 = 0
+		remind_list = sorted(remind_list)
+		loop_detect = False
+		for i in remind_list:
+			if not loop_detect:
+				Day = i[0]
+				if int(search_day[:4]) < int(Day[:4]):
 					loop_detect = True
 					break
-				else:
+				elif int(search_day[:4]) > int(Day[:4]):
 					counter_2 = counter_2 + 1
-		else:
-			break
-	if not counter_2 == 0:
-		list_delete = remind_list[:counter_2]
-		remind_list = remind_list[counter_2:]
-		change = True
-		deleted_channel = client.get_channel(BOT_DELETED_CHANNEL)
-		for y in list_delete:
-			deltask = str(' '.join(y))
-			await deleted_channel.send(deltask)
-			print('removed ' + deltask)
-	await asyncio.sleep(60)
+				else:
+					if int(search_day[5:7]) <= int(Day[5:7]):
+						loop_detect = True
+						break
+					else:
+						counter_2 = counter_2 + 1
+			else:
+				break
+		if not counter_2 == 0:
+			list_delete = remind_list[:counter_2]
+			remind_list = remind_list[counter_2:]
+			change = True
+			deleted_channel = client.get_channel(BOT_DELETED_CHANNEL)
+			for y in list_delete:
+				deltask = str(' '.join(y))
+				await deleted_channel.send(deltask)
+				print('removed ' + deltask)
+		await asyncio.sleep(60)
 
 
 # 接続に必要なオブジェクトを生成
@@ -474,7 +475,8 @@ async def on_ready():
 	print(remind_list)
 	print('import complete!')
 	print('Started loop')
-	minute_loop()
+	loop = asyncio.get_event_loop()
+	loop.run_until_complete(minute_loop())
 
 # メッセージ受信時に動作する処理
 @client.event
