@@ -8,7 +8,7 @@ import unicodedata
 
 TOKEN = os.environ['DISCORD_BOT_TOKEN']  # discord botのトークン。Heroku上で環境変数として設定している。
 DIFF_JST_FROM_UTC = 9
-started_time = datetime.datetime.utcnow() + datetime.timedelta(hours=DIFF_JST_FROM_UTC)  #起動した瞬間の時刻(JTC)を取得
+started_time = datetime.datetime.utcnow() + datetime.timedelta(hours=DIFF_JST_FROM_UTC)  # 起動した瞬間の時刻(JTC)を取得
 BOT_LOG_CHANNEL = 710813437675962449  # BotlogチャンネルのID
 BOT_COMMAND_CHANNEL = 710752335781036073  # コマンド送信用チャンネルのID
 BOT_DATA_CHANNEL = 710752335781036073  # 課題、イベント一覧チャンネルのID
@@ -19,10 +19,10 @@ cmd_chl = True
 change = False
 task = ''
 # 以下のリストたちはbotのランダムな返信リスト。 '#'の部分がタスク名に置き換わる(No_hashだけはそのまま)
-Format_error_deadline =['ブブー！締切の日時のフォーマットが違います',
-			'ワタシ、ソノニチジ ワカラナイデス',
-			'残念！締切の日時のフォーマットエラーだ！',
-		        'あぁ...締め切り日時って間違える人多いんだよね...']
+Format_error_deadline = ['ブブー！締切の日時のフォーマットが違います',
+			 'ワタシ、ソノニチジ ワカラナイデス',
+			 '残念！締切の日時のフォーマットエラーだ！',
+		         'あぁ...締め切り日時って間違える人多いんだよね...']
 Element_missed = ['あれ...何かが足りない...',
 		  'ブブー！ヨウソガタリナイアルヨ',
 		  '要素が足りないんだよおおぉぉぉぉ！！']
@@ -71,7 +71,6 @@ Renamed = ['ガチャコン！ # に置き換わった！',
 # ↓時刻の整形をする関数。入れられた値(18-5-6_3:15等)を整形(2018-05-06_03:15等)する
 def time_format_check(date):
 	slash_count = date.count('/')
-	coron_count = date.count(':')
 	if slash_count <= 0:
 		date = 'Format error'
 	elif slash_count >= 3:
@@ -368,7 +367,7 @@ def list_process(message, on_cmd_cnl):
 		else:
 			rtn_msg = list_show(remind_list)
 
-		print(str(message.author) + ' used /list')	
+		print(str(message.author) + ' used /list')
 	elif '/reschedule' in command:
 		cmd_chl = False
 		if on_cmd_cnl:
@@ -407,6 +406,7 @@ def list_process(message, on_cmd_cnl):
 
 # 接続に必要なオブジェクトを生成
 client = discord.Client()
+
 # チャンネルIDからチャンネルオブジェクトを作成
 log_channel = client.get_channel(BOT_LOG_CHANNEL)
 command_channel = client.get_channel(BOT_COMMAND_CHANNEL)
@@ -456,7 +456,7 @@ async def on_message(message):
 				remind_list = sorted(remind_list)
 				sndmsg = list_show(remind_list, option='normal')
 				data_channel = client.get_channel(BOT_DATA_CHANNEL)
-				
+
 				def is_me(m):
 					return m.author == client.user
 				await data_channel.purge(limit=100)
@@ -472,7 +472,7 @@ async def on_message(message):
 	except:  # 何かエラーが起きたらその内容をbotlogチャンネルに送信
 		log_channel = client.get_channel(BOT_LOG_CHANNEL)
 		exc_type, exc_obj, exc_tb = sys.exc_info()
-		await log_channel.send('Error in line ' + str( exc_tb.tb_lineno ) + ' in ' +str(os.path.split( exc_tb.tb_frame.f_code.co_filename )[ 1 ]))
+		await log_channel.send('Error in line ' + str( exc_tb.tb_lineno ) + ' in ' + str(os.path.split( exc_tb.tb_frame.f_code.co_filename )[ 1 ]))
 		await log_channel.send(str(sys.exc_info()[0]))
 		await log_channel.send(str(sys.exc_info()[1]))
 		await log_channel.send(str(sys.exc_info()[2]))
