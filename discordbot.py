@@ -323,7 +323,7 @@ def list_process(message, on_cmd_cnl):
 						print(str(message.author) + ' renamed ' + str(task) + ' to ' + str(command_list[1]))
 						# タスクを削除した旨を変数(rtn_msg)に格納
 						rtn_msg = random.choice(Renamed)
-						task = str(task) + ' が ' + str(command_list)
+						task = str(task) + ' が ' + str(command_list[1])
 						rtn_msg = hash_replace(task, rtn_msg)
 						# リストが変更されたことを示すために変数(change)を真にする
 						change = True
