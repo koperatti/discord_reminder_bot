@@ -12,6 +12,7 @@ started_time = datetime.datetime.utcnow() + datetime.timedelta(hours=DIFF_JST_FR
 BOT_LOG_CHANNEL = 710813437675962449  # BotlogチャンネルのID
 BOT_COMMAND_CHANNEL = 710752335781036073  # コマンド送信用チャンネルのID
 BOT_DATA_CHANNEL = 710752335781036073  # 課題、イベント一覧チャンネルのID
+BOT_DELETED_CHANNEL = 712514435071082497
 remind_list = []
 day_later = 0
 on_cmd_cnl = False
@@ -133,6 +134,7 @@ def hash_replace(task, strings):
 
 # 文字列の長さをスペースで保管する関数
 def left(digit, msg):
+	digit = digit - 1
 	for c in msg:
 		if unicodedata.east_asian_width(c) in ('F', 'W', 'A'):
 			digit -= 4
@@ -142,7 +144,7 @@ def left(digit, msg):
 			digit -= 2
 		else:
 			digit -= 2
-	msg = msg + ' ' * digit
+	msg = msg + ' ' * digit + ' '
 	return msg
 
 
@@ -180,7 +182,7 @@ def list_show(remind_list, option=['normal']):
 				break
 		remind_list_show = remind_list[:counter - 1]
 	if 'normal' in option:
-		sndmsg = 'タスク一覧\n__**締切**                              **タスク**                                                               **科目名**                  __\n'
+		sndmsg = 'タスク一覧\n__**締切**                                  **タスク**                                                           **科目名**                  __\n'
 		for a in remind_list_show:
 			i = a[0]
 			sndmsg = sndmsg + left(38, i)
@@ -404,6 +406,44 @@ def list_process(message, on_cmd_cnl):
 			rtn_msg = random.choice(Wrong_channel)
 	return rtn_msg, cmd_chl
 
+
+def minute_loop():
+	global change
+	global remind_list
+	dt_now = datetime.datetime.today()
+	search_day = dt_now + datetime.timedelta(hours=DIFF_JST_FROM_UTC)
+	search_day = search_day.strftime('%Y/%m/%d_')
+	counter_2 = 0
+	remind_list = sorted(remind_list)
+	loop_detect = False
+	for i in remind_list:
+		if not loop_detect:
+			Day = i[0]
+			if int(search_day[:4]) < int(Day[:4]):
+				loop_detect = True
+				break
+			elif int(search_day[:4]) > int(Day[:4]):
+				counter_2 = counter_2 + 1
+			else:
+				if int(search_day[5:7]) <= int(Day[5:7]):
+					loop_detect = True
+					break
+				else:
+					counter_2 = counter_2 + 1
+		else:
+			break
+	if not counter_2 == 0:
+		list_delete = remind_list[:counter_2]
+		remind_list = remind_list[counter_2:]
+		change = True
+		deleted_channel = client.get_channel(BOT_DELETED_CHANNEL)
+		for y in list_delete:
+			deltask = str(' '.join(y))
+			await deleted_channel.send(deltask)
+			print('removed ' + deltask)
+	await asyncio.sleep(60)
+
+
 # 接続に必要なオブジェクトを生成
 client = discord.Client()
 
@@ -433,6 +473,8 @@ async def on_ready():
 	await log_channel.send('Imported the data from 課題、イベント一覧!')
 	print(remind_list)
 	print('import complete!')
+	print('Started loop')
+	minute_loop()
 
 # メッセージ受信時に動作する処理
 @client.event
