@@ -480,7 +480,7 @@ async def on_ready():
 	print('import complete!')
 	print('Started loop')
 	loop = asyncio.get_event_loop()
-	minute_loop.start()
+	await minute_loop()
 
 # メッセージ受信時に動作する処理
 @client.event
