@@ -22,6 +22,7 @@ on_cmd_cnl = False
 cmd_chl = True
 change = False
 task = ''
+flag = False
 # 以下のリストたちはbotのランダムな返信リスト。 '#'の部分がタスク名に置き換わる(No_hashだけはそのまま)
 Format_error_deadline = ['ブブー！締切の日時のフォーマットが違います',
 			 'ワタシ、ソノニチジ ワカラナイデス',
@@ -424,6 +425,7 @@ async def minute_loop():
 	global change
 	global remind_list
 	global day_later
+	global flag
 	while True:
 		dt_now = datetime.datetime.today()
 		search_day = dt_now + datetime.timedelta(hours=DIFF_JST_FROM_UTC)
