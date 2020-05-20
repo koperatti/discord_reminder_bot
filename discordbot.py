@@ -2,12 +2,9 @@ import discord
 import os
 import sys
 import datetime
-import traceback
 import random
-from discord.ext import tasks
 import asyncio
 import unicodedata
-import pprint
 
 TOKEN = os.environ['DISCORD_BOT_TOKEN']  # discord botのトークン。Heroku上で環境変数として設定している。
 DIFF_JST_FROM_UTC = 9
