@@ -1,4 +1,5 @@
 import discord
+from discord.ext import tasks
 import os
 import sys
 import datetime
@@ -406,7 +407,7 @@ def list_process(message, on_cmd_cnl):
 			rtn_msg = random.choice(Wrong_channel)
 	return rtn_msg, cmd_chl
 
-
+@tasks.loop(seconds=60)
 async def minute_loop():
 	global change
 	global remind_list
@@ -436,13 +437,16 @@ async def minute_loop():
 		if not counter_2 == 0:
 			list_delete = remind_list[:counter_2]
 			remind_list = remind_list[counter_2:]
-			change = True
+			
 			deleted_channel = client.get_channel(BOT_DELETED_CHANNEL)
 			for y in list_delete:
 				deltask = str(' '.join(y))
 				await deleted_channel.send(deltask)
 				print('removed ' + deltask)
-		await asyncio.sleep(60)
+			reflesh_msg = list_show(remind_list, option='normal')
+			data_channel = client.get_channel(BOT_DATA_CHANNEL)
+			await data_channel.purge(limit=100)
+			await data_channel.send(reflesh_msg)
 
 
 # 接続に必要なオブジェクトを生成
@@ -476,7 +480,7 @@ async def on_ready():
 	print('import complete!')
 	print('Started loop')
 	loop = asyncio.get_event_loop()
-	minute_loop()
+	minute_loop.start()
 
 # メッセージ受信時に動作する処理
 @client.event
