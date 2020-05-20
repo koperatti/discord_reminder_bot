@@ -407,7 +407,7 @@ def list_process(message, on_cmd_cnl):
 	return rtn_msg, cmd_chl
 
 
-def minute_loop():
+async def minute_loop():
 	global change
 	global remind_list
 	dt_now = datetime.datetime.today()
