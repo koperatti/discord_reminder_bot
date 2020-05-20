@@ -14,6 +14,8 @@ BOT_LOG_CHANNEL = 710813437675962449  # BotlogチャンネルのID
 BOT_COMMAND_CHANNEL = 710752335781036073  # コマンド送信用チャンネルのID
 BOT_DATA_CHANNEL = 710752335781036073  # 課題、イベント一覧チャンネルのID
 BOT_DELETED_CHANNEL = 712514435071082497
+BOT_REMIND_CHANNEL = 712642325418868776
+
 remind_list = []
 day_later = 0
 on_cmd_cnl = False
@@ -198,6 +200,16 @@ def list_show(remind_list, option=['normal']):
 			sndmsg = sndmsg + '\n'
 			sndmsg = sndmsg + str(a[0]) + '\n'
 			sndmsg = sndmsg + str(a[1]) + ' ('
+			sndmsg = sndmsg + str(a[2]) + ')\n'
+	elif 'small' in option:
+		sndmsg = '__**今日の課題**__\n'
+		for a in remind_list_show:
+			sndmsg = sndmsg + '\n'
+			if len(a[0]) == 10:
+				pass
+			else:
+				sndmsg = sndmsg + str(a[0][11:]) + '\n'
+			sndmsg = sndmsg + str(a[1]) + '('
 			sndmsg = sndmsg + str(a[2]) + ')\n'
 	return sndmsg
 
@@ -411,10 +423,11 @@ def list_process(message, on_cmd_cnl):
 async def minute_loop():
 	global change
 	global remind_list
+	global day_later
 	while True:
 		dt_now = datetime.datetime.today()
 		search_day = dt_now + datetime.timedelta(hours=DIFF_JST_FROM_UTC)
-		search_day = search_day.strftime('%Y/%m/%d_')
+		search_day = search_day.strftime('%Y/%m/%d_%H:%M')
 		counter_2 = 0
 		remind_list = sorted(remind_list)
 		loop_detect = False
@@ -443,10 +456,20 @@ async def minute_loop():
 				deltask = str(' '.join(y))
 				await deleted_channel.send(deltask)
 				print('removed ' + deltask)
-			reflesh_msg = list_show(remind_list, option='normal')
+			reflesh_msg = list_show(remind_list, option=['in', 'small'])
 			data_channel = client.get_channel(BOT_DATA_CHANNEL)
 			await data_channel.purge(limit=100)
 			await data_channel.send(reflesh_msg)
+		if not flag:
+			if '06:00' in search_day:
+				day_later = 0
+				today_msg = list_show(remind_list, option=['normal', 'small'])
+				remind_channel = client.get_channel(BOT_REMIND_CHANNEL)
+				await remind_channel.purge(limit=100)
+				await remind_channel.send(today_msg)
+			flag = True
+		else:
+			flag = False
 		await asyncio.sleep(60)
 
 
@@ -480,7 +503,6 @@ async def on_ready():
 	print(remind_list)
 	print('import complete!')
 	print('Started loop')
-	loop = asyncio.get_event_loop()
 	asyncio.ensure_future(minute_loop())
 
 # メッセージ受信時に動作する処理
