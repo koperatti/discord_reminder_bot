@@ -407,7 +407,7 @@ def list_process(message, on_cmd_cnl):
 			rtn_msg = random.choice(Wrong_channel)
 	return rtn_msg, cmd_chl
 
-@tasks.loop(seconds=60)
+
 async def minute_loop():
 	global change
 	global remind_list
@@ -447,6 +447,7 @@ async def minute_loop():
 			data_channel = client.get_channel(BOT_DATA_CHANNEL)
 			await data_channel.purge(limit=100)
 			await data_channel.send(reflesh_msg)
+		await asyncio.sleep(60)
 
 
 # 接続に必要なオブジェクトを生成
@@ -480,7 +481,7 @@ async def on_ready():
 	print('import complete!')
 	print('Started loop')
 	loop = asyncio.get_event_loop()
-	await minute_loop()
+	asyncio.ensure_future(minute_loop())
 
 # メッセージ受信時に動作する処理
 @client.event
