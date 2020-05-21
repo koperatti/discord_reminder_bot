@@ -458,7 +458,7 @@ async def minute_loop():
 				else:
 					break
 			if not counter_2 == 0:
-				list_delete = remind_list[:counter_2 + 1]
+				list_delete = remind_list[:counter_2]
 				remind_list = remind_list[counter_2:]
 				deleted_channel = client.get_channel(BOT_DELETED_CHANNEL)
 				for y in list_delete:
