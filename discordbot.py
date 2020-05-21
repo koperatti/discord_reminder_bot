@@ -442,9 +442,16 @@ async def minute_loop():
 				elif int(search_day[:4]) > int(Day[:4]):
 					counter_2 = counter_2 + 1
 				else:
-					if int(search_day[5:7]) <= int(Day[5:7]):
+					if int(search_day[5:7]) < int(Day[5:7]):
 						loop_detect = True
 						break
+					elif int(search_day[5:7]) == int(Day[5:7]):
+						if int(Day[8:10]) <= int(Day[8:10]):
+							loop_detect = True
+							break
+						else:
+							counter_2 = counter_2 + 1
+							
 					else:
 						counter_2 = counter_2 + 1
 			else:
