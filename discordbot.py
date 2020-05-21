@@ -202,7 +202,7 @@ def list_show(remind_list, option=['normal']):
 			sndmsg = sndmsg + str(a[0]) + '\n'
 			sndmsg = sndmsg + str(a[1]) + ' ('
 			sndmsg = sndmsg + str(a[2]) + ')\n'
-	elif 'small' in option:
+	if 'small' in option:
 		sndmsg = '__**今日の課題**__\n'
 		for a in remind_list_show:
 			sndmsg = sndmsg + '\n'
@@ -458,7 +458,7 @@ async def minute_loop():
 				deltask = str(' '.join(y))
 				await deleted_channel.send(deltask)
 				print('removed ' + deltask)
-			reflesh_msg = list_show(remind_list, option=['in', 'small'])
+			reflesh_msg = list_show(remind_list, option=['normal'])
 			data_channel = client.get_channel(BOT_DATA_CHANNEL)
 			await data_channel.purge(limit=100)
 			await data_channel.send(reflesh_msg)
