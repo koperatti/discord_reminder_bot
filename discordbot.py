@@ -480,7 +480,7 @@ async def minute_loop():
 			else:
 				flag = False
 			await asyncio.sleep(60)
-		escept:
+		except:
 			log_channel = client.get_channel(BOT_LOG_CHANNEL)
 			exc_type, exc_obj, exc_tb = sys.exc_info()
 			await log_channel.send('Error in line ' + str( exc_tb.tb_lineno ) + ' in ' + str(os.path.split( exc_tb.tb_frame.f_code.co_filename )[ 1 ]))
