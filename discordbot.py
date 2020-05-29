@@ -10,11 +10,9 @@ import unicodedata
 TOKEN = os.environ['DISCORD_BOT_TOKEN']  # discord botのトークン。Heroku上で環境変数として設定している。
 DIFF_JST_FROM_UTC = 9
 started_time = datetime.datetime.utcnow() + datetime.timedelta(hours=DIFF_JST_FROM_UTC)  # 起動した瞬間の時刻(JTC)を取得
-BOT_LOG_CHANNEL = 710813437675962449  # BotlogチャンネルのID
-BOT_COMMAND_CHANNEL = 710752335781036073  # コマンド送信用チャンネルのID
-BOT_DATA_CHANNEL = 710752335781036073  # 課題、イベント一覧チャンネルのID
-BOT_DELETED_CHANNEL = 712514435071082497
-BOT_REMIND_CHANNEL = 712642325418868776
+BOT_LOG_CHANNEL = 715828540326674472  # BotlogチャンネルのID
+BOT_COMMAND_CHANNEL = 715828454724993085  # コマンド送信用チャンネルのID
+BOT_DATA_CHANNEL = 715828454724993085  # 課題、イベント一覧チャンネルのID
 
 remind_list = []
 day_later = 0
@@ -49,7 +47,7 @@ Added = ['# を課題リストにぶっこんでやったぜ！',
 	 'シュウゥゥゥゥ... # は課題リストに吸い込まれていった！',
 	 '# が課題リストに飛び乗りました',
 	 '# が課題リストに滑り込みました',
-	 '気をつけろ！ # が課題リストにお出ましだ！'
+	 '気をつけろ！ # が課題リストにお出ましだ！',
 	 'やぁ！ #! ピザ持ってきたよね']
 Removed = ['あばよ、#、お前の役目はもう終わりなんだ。',
 	   '達者でな、#、またどこかで会おうぜ！',
@@ -421,73 +419,6 @@ def list_process(message, on_cmd_cnl):
 	return rtn_msg, cmd_chl
 
 
-async def minute_loop():
-	global change
-	global remind_list
-	global day_later
-	global flag
-	flag = False
-	while True:
-		try:
-			dt_now = datetime.datetime.today()
-			search_day = dt_now + datetime.timedelta(hours=DIFF_JST_FROM_UTC)
-			search_day = search_day.strftime('%Y/%m/%d_%H:%M')
-			counter_2 = 0
-			remind_list = sorted(remind_list)
-			loop_detect = False
-			for i in remind_list:
-				if not loop_detect:
-					Day = i[0]
-					if int(search_day[:4]) < int(Day[:4]):
-						loop_detect = True
-						break
-					elif int(search_day[:4]) > int(Day[:4]):
-						counter_2 = counter_2 + 1
-					else:
-						if int(search_day[5:7]) < int(Day[5:7]):
-							loop_detect = True
-							break
-						elif int(search_day[5:7]) == int(Day[5:7]):
-							if int(Day[8:10]) <= int(Day[8:10]):
-								loop_detect = True
-								break
-							else:
-								counter_2 = counter_2 + 1
-						else:
-							counter_2 = counter_2 + 1
-				else:
-					break
-			if not counter_2 == 0:
-				list_delete = remind_list[:counter_2]
-				remind_list = remind_list[counter_2:]
-				deleted_channel = client.get_channel(BOT_DELETED_CHANNEL)
-				for y in list_delete:
-					deltask = str(' '.join(y))
-					await deleted_channel.send(deltask)
-					print('removed ' + deltask)
-				reflesh_msg = list_show(remind_list, option=['normal'])
-				data_channel = client.get_channel(BOT_DATA_CHANNEL)
-				await data_channel.purge(limit=100)
-				await data_channel.send(reflesh_msg)
-			if not flag:
-				if '06:00' in search_day:
-					day_later = 0
-					today_msg = list_show(remind_list, option=['normal', 'small'])
-					remind_channel = client.get_channel(BOT_REMIND_CHANNEL)
-					await remind_channel.purge(limit=100)
-					await remind_channel.send(today_msg)
-				flag = True
-			else:
-				flag = False
-			await asyncio.sleep(60)
-		except:
-			log_channel = client.get_channel(BOT_LOG_CHANNEL)
-			exc_type, exc_obj, exc_tb = sys.exc_info()
-			await log_channel.send('Error in line ' + str( exc_tb.tb_lineno ) + ' in ' + str(os.path.split( exc_tb.tb_frame.f_code.co_filename )[ 1 ]))
-			await log_channel.send(str(sys.exc_info()[0]))
-			await log_channel.send(str(sys.exc_info()[1]))
-			await log_channel.send(str(sys.exc_info()[2]))
-			await asyncio.sleep(60)
 
 
 # 接続に必要なオブジェクトを生成
@@ -519,8 +450,6 @@ async def on_ready():
 	await log_channel.send('Imported the data from 課題、イベント一覧!')
 	print(remind_list)
 	print('import complete!')
-	print('Started loop')
-	asyncio.ensure_future(minute_loop())
 
 # メッセージ受信時に動作する処理
 @client.event
